@@ -44,3 +44,21 @@ fetch('https://api.themoviedb.org/3/movie/' + imdbMovieID + '/images?api_key=' +
             })
         }
     })
+
+    // love calc fetch
+    fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=Bleakney&sname=Bob", {
+	"method": "GET",
+	"headers": {
+		"x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
+		"x-rapidapi-host": "love-calculator.p.rapidapi.com"
+	}
+})
+.then(response => {
+	response.json()
+    .then(function(data){
+        console.log(data)
+    })
+})
+.catch(err => {
+	console.error(err);
+});
