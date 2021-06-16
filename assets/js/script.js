@@ -62,3 +62,4 @@ fetch('https://api.themoviedb.org/3/movie/' + imdbMovieID + '/images?api_key=' +
 .catch(err => {
 	console.error(err);
 });
+
