@@ -1,3 +1,37 @@
+// *** START PSEUDO CODE *** //
+
+// create a click handler for the 'love calculation button' (MVP)
+    // on click, trigger modal to display (MVP)
+// When user submits names:
+    // store user inputs for first names (MVP)
+    // pass as parameters to run through the love calculator API fetch (MVP)
+    // push the names to the js object (MVP)
+    // save js object to local storage (MVP)
+    // display the couple name in the history section by adding as a button element (MVP)
+    // display calculating love graphic (NON MVP)
+        // have fade/disappear after a few seconds (NON MVP)
+    // display love percentage (MVP)
+        // add css class dynamically to style the display based on what percentage range it falls into (NON MVP)
+    // based on the percentage, pull the genre associated with that percentage (MVP)
+        // pass that genre through the TMDB API fetch as parameter to pull a randomized list of 10? movie titles (MVP)
+        // push those titles to an array (MVP)
+            // create a for loop to iterate over the array and pass the movie title name through the OMDB API fetch (http://www.omdbapi.com/ for documentation) to pull all imdb movie IDs  (MVP)
+            // push those imdb movie ids to a new array (MVP)
+                // create a for loop to iterate over the new array and pass the IMDB movie IDs through the TMDB API fetch to pull the image file path for each poster  (MVP)
+                    // push the file paths to a new array (MVP)
+                        // create a for loop to create the img element using the file path as the 'src' attribute (MVP)
+                            // append to page (MVP)
+// When user clicks movie poster image:
+    // open a new tab to the IMDB movie page (url syntax: https://www.imdb.com/title/<imdb movie ID> ) (NON MVP)
+    // have a modal pop up that shows: 
+        // what streaming platforms its on (MVP if possible)
+        // If in 'now playing' - show release date, maybe a link to fandango to so they can search if movie is playing around them (NON MVP)
+// When user refreshes/revisits page getItems from local storage and recreate the search history couples (MVP)
+
+        
+
+
+
 // API key for The Movie Database
 const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
 // for testing purposes I've pulled Step Brothers imdb movie ID
