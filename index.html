@@ -1,55 +1,64 @@
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta http-equiv="X-UA-Compatible" content="IE=edge">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>Movie Date</title>
-    <link rel="stylesheet" href="./assets/css/style.css">
+
+    <!-- UIkit CSS -->
+    <link
+      rel="stylesheet"
+      href="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/css/uikit.min.css"
+    />
+
+    <!-- Movie Date CSS -->
     <link rel="stylesheet" href="./assets/css/style.css" />
-</head>
-<body>
-  <!--Header-->
-  <header>
-    <h1>The Movie Date (working title)</h1>
-  </header>
-  <!--jumbotron??-->
-  <section>
-    <h2>
-      Is your relationship destined for true love like The Notebook? Or is it
-      bound to hit an iceberg like Titanic?
-    </h2>
-    <h3>
-      Give us your name and the name of your partner, and find out which movie
-      your love life is destined for!
-    </h3>
-  </section>
+  </head>
+  <body>
+    <!--Header-->
+    <header>
+      <h1>The Movie Date (working title)</h1>
+    </header>
+    <!--jumbotron??-->
+    <section>
+      <h2>
+        Is your relationship destined for true love like The Notebook? Or is it
+        bound to hit an iceberg like Titanic?
+      </h2>
+      <h3>
+        Give us your name and the name of your partner, and find out which movie
+        your love life is destined for!
+      </h3>
+    </section>
 
-  <!--input area-->
-  <div class="form-container">
-    <form>
-      <label for="yourName">Your Name:</label>
-      <input
-        type="text"
-        placeholder="Your Name"
-        id="name"
-        class="form-input"
-      />
-      <label for="partnerName">Your Partner's Name</label>
-      <input
-        type="text"
-        placeholder="Your Partner's Name"
-        id="partner"
-        class="form-input"
-      />
-      <!--submit button-->
-      <button type="submit">Find Your Movie!</button>
-    </form>
-  </div>
+    <!--input area-->
+    <div class="form-container">
+      <form>
+        <label for="yourName">Your Name:</label>
+        <input
+          type="text"
+          placeholder="Your Name"
+          id="name"
+          class="form-input"
+        />
+        <label for="partnerName">Your Partner's Name</label>
+        <input
+          type="text"
+          placeholder="Your Partner's Name"
+          id="partner"
+          class="form-input"
+        />
+        <!--submit button-->
+        <button type="submit">Find Your Movie!</button>
+      </form>
+    </div>
 
+    <!-- UIkit JS -->
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit-icons.min.js"></script>
 
-    
-    
+    <!-- Movie Date JS -->
     <script src="./assets/js/script.js"></script>
-</body>
+  </body>
 </html>
