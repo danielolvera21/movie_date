@@ -45,6 +45,26 @@ function randomNum(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+// love calc fetch
+fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=Bleakney&sname=Bob", {
+    "method": "GET",
+    "headers": {
+        "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
+        "x-rapidapi-host": "love-calculator.p.rapidapi.com"
+    }
+})
+    .then(response => {
+        response.json()
+            .then(function (data) {
+                // console.log('love calculator: ', data)
+            })
+    })
+    .catch(err => {
+        console.error(err);
+    });
+
+
+
 // for testing purposes I've pulled Step Brothers imdb movie ID
 const imdbMovieID = '834500'
 
@@ -54,7 +74,7 @@ fetch('https://api.themoviedb.org/3/movie/' + imdbMovieID + '/images?api_key=' +
     .then(function (response) {
         if (response.ok) {
             response.json().then(function (data) {
-                console.log('img url: ', data);
+                // console.log('img url: ', data);
                 // pull img file path for the highest rated image (index 0)
                 const tmdbImgPath = data.posters[0].file_path;
                 // create img element and append to body of DOM
@@ -73,53 +93,34 @@ fetch("https://api.themoviedb.org/3/genre/movie/list?api_key=" + tmdbAPIKey + "&
         if (response.ok) {
             response.json()
                 .then(function (data) {
-                    console.log('genre id: ', data);
+                    // console.log('genre id: ', data);
                 })
         }
     })
 
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
-
-
-for (var i = 0; i < 5; i++) {
-    // to generate a random page number from 1 - 500
-    let randomPage = randomNum(1, 501);
-    // to generate a random result index from 0 - 19
-    let randomResult = randomNum(0, 20);
-    fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=10749&with_original_language=en&include_adult=true&page=" + randomPage)
-        .then(function (response) {
-            if (response.ok) {
-                response.json().then(function (data) {
-                    console.log('movie title: ', data);
-                    console.log(data.results[randomResult].backdrop_path)
-
-                    if (data.results[randomResult].backdrop_path) {
-                        movieTitlesArray.push(data.results[randomResult].title)
-                        console.log(movieTitlesArray);
-                    } 
-                })
+async function getMovieTitles() {
+    while (movieTitlesArray.length < 5) {
+        // to generate a random page number from 1 - 500
+        let randomPage = randomNum(1, 501);
+        // to generate a random result index from 0 - 19
+        let randomResult = randomNum(0, 20);
+        const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=10749&with_original_language=en&include_adult=true&page=" + randomPage);
+        
+        if (response.ok) {
+            const data = await response.json();
+            console.log('movie title: ', data);
+            // if has an image url, push the movie title to the movieTitlesArray
+            if (data.results[randomResult].backdrop_path) {
+                movieTitlesArray.push(data.results[randomResult].title)
+                console.log(movieTitlesArray);
             }
-        })
+        }
+    }
 }
 
+getMovieTitles();
 
 
-// love calc fetch
-fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=Bleakney&sname=Bob", {
-    "method": "GET",
-    "headers": {
-        "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
-        "x-rapidapi-host": "love-calculator.p.rapidapi.com"
-    }
-})
-    .then(response => {
-        response.json()
-            .then(function (data) {
-                console.log('love calculator: ', data)
-            })
-    })
-    .catch(err => {
-        console.error(err);
-    });
 
