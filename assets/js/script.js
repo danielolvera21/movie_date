@@ -1,4 +1,4 @@
-// *** START PSEUDO CODE *** //
+            // *** START PSEUDO CODE *** //
 
 // create a click handler for the 'love calculation button' (MVP)
 // on click, trigger modal to display (MVP)
@@ -28,17 +28,16 @@
 // If in 'now playing' - show release date, maybe a link to fandango to so they can search if movie is playing around them (NON MVP)
 // When user refreshes/revisits page getItems from local storage and recreate the search history couples (MVP)
 
-// *** END PSEUDO CODE *** //        
+            // *** END PSEUDO CODE *** //        
 
-// *** GLOBAL VARIABLES START *** //
-
-// create empty movie titles array
+            // *** GLOBAL VARIABLES START *** //
+// create an array for empty movie titles
 let movieTitlesArray = [];
 // API key for The Movie Database
 const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
-const tmdbImgSrcUrl = 'https://image.tmdb.org/t/p/original/'; // we can adjust the 'original' size call by various sizes if adjusting with CSS makes it look weird.
+const tmdbImgSrcUrl = 'https://image.tmdb.org/t/p/w500'; // we can adjust the 'w500' size call by various sizes if adjusting with CSS makes it look weird.
 
-// *** GLOBAL VARIABLES END *** //
+            // *** GLOBAL VARIABLES END *** //
 
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
@@ -63,30 +62,6 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=Bleakney&sname
         console.error(err);
     });
 
-
-
-// for testing purposes I've pulled Step Brothers imdb movie ID
-const imdbMovieID = '834500'
-
-
-// To display the image we retreive from TMDB API to DOM
-fetch('https://api.themoviedb.org/3/movie/' + imdbMovieID + '/images?api_key=' + tmdbAPIKey + '&language=en-US&include_image_language=en,null')
-    .then(function (response) {
-        if (response.ok) {
-            response.json().then(function (data) {
-                // console.log('img url: ', data);
-                // pull img file path for the highest rated image (index 0)
-                const tmdbImgPath = data.posters[0].file_path;
-                // create img element and append to body of DOM
-                let imgEL = document.createElement('img');
-                imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
-
-                document.querySelector('body').appendChild(imgEL);
-            })
-        }
-
-    })
-
 // pull list of genres with ids
 fetch("https://api.themoviedb.org/3/genre/movie/list?api_key=" + tmdbAPIKey + "&language=en-US")
     .then(function (response) {
@@ -106,15 +81,34 @@ async function getMovieTitles() {
         let randomPage = randomNum(1, 501);
         // to generate a random result index from 0 - 19
         let randomResult = randomNum(0, 20);
+        // await call makes the fetch call synchronous 
         const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=10749&with_original_language=en&include_adult=true&page=" + randomPage);
-        
+
         if (response.ok) {
             const data = await response.json();
             console.log('movie title: ', data);
             // if has an image url, push the movie title to the movieTitlesArray
-            if (data.results[randomResult].backdrop_path) {
-                movieTitlesArray.push(data.results[randomResult].title)
-                console.log(movieTitlesArray);
+            if (data.results[randomResult].poster_path) {
+                // pull movie title from data object
+                const movieTitle = data.results[randomResult].title;
+                // push movie title to movieTitlesArray
+                movieTitlesArray.push(movieTitle);
+                // pull img file path for the poster
+                const tmdbImgPath = data.results[randomResult].poster_path;
+                // create header for movie title
+                let movieTitleEl = document.createElement('H1')
+                // create text of h1 header
+                let headerEl = document.createTextNode(movieTitle);
+                // create img element
+                let imgEL = document.createElement('img');
+                imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
+                // will change where the posters are being appended to once the containers are set up
+                // append textEl to movieTitleEL
+                movieTitleEl.appendChild(headerEl);
+                // append movie title to body of DOM
+                document.querySelector('body').appendChild(movieTitleEl);
+                // append image to body of DOM
+                document.querySelector('body').appendChild(imgEL);
             }
         }
     }
