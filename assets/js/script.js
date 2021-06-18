@@ -117,4 +117,3 @@ async function getMovieTitles() {
 getMovieTitles();
 
 
-
