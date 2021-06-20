@@ -31,9 +31,11 @@
 // *** END PSEUDO CODE *** //        
 
 // *** GLOBAL VARIABLES START *** //
-// create an array for empty movie titles
+// create an empty array for movie titles
 let movieTitlesArray = [];
+// create an empty array for watch providers
 let watchProviderArray = [];
+// create an empty array that'll combine the two above arrays to key:value pairs respectively
 let movieObject = {};
 // API key for The Movie Database
 const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
@@ -49,63 +51,63 @@ function randomNum(min, max) {
 }
 
 
-// // love calc modal form submission handler
-// let modalFormSubmitHandler = function (event) {
-//     event.preventDefault();
-//     // retrieve names from user inputs
-//     let userName = $("#nameInput1").val();
-//     let partnerName = $("#nameInput2").val();
-//     if(userName && partnerName) {
-//         console.log(userName, partnerName);
-//         calculateCompatibility(userName, partnerName);
-//         firstNameInputElement.value = "";
-//         secondNameInputElement.value = "";
-//     } else {
-//         alert("error")
-//        // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
-//     }
-// };
-// $("#loveCalcButton").click(modalFormSubmitHandler);
+// love calc modal form submission handler
+let modalFormSubmitHandler = function (event) {
+    event.preventDefault();
+    // retrieve names from user inputs
+    let userName = $("#nameInput1").val();
+    let partnerName = $("#nameInput2").val();
+    if(userName && partnerName) {
+        console.log(userName, partnerName);
+        calculateCompatibility(userName, partnerName);
+        firstNameInputElement.value = "";
+        secondNameInputElement.value = "";
+    } else {
+        alert("error")
+       // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
+    }
+};
+$("#loveCalcButton").click(modalFormSubmitHandler);
 
 
 
 
-// // love calc fetch
-// function calculateCompatibility(name1, name2) {
-// fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&sname=" + name2, {
-//     "method": "GET",
-//     "headers": {
-//         "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
-//         "x-rapidapi-host": "love-calculator.p.rapidapi.com"
-//     }
-// })
-//     .then(response => {
-//         response.json()
-//             .then(function (data) {
+// love calc fetch
+function calculateCompatibility(name1, name2) {
+fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&sname=" + name2, {
+    "method": "GET",
+    "headers": {
+        "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
+        "x-rapidapi-host": "love-calculator.p.rapidapi.com"
+    }
+})
+    .then(response => {
+        response.json()
+            .then(function (data) {
 
-//                 console.log('love calculator: ', data, data.percentage)
-//                 // check percentage amount to determine which genre to use in getMovieTitles
-//                 if (data.percentage >= 0 && data.percentage < 26) {
-//                     let genreId = 27;
-//                     getMovieTitles(genreId);
-//                 } else if (data.percentage >=26 && data.percentage < 51) {
-//                     let genreId = 10752;
-//                     getMovieTitles(genreId);
-//                 } else if (data.percentage >=51 && data.percentage < 76) {
-//                     let genreId = 53;
-//                     getMovieTitles(genreId);
-//                 } else {
-//                     let genreId = 10749;
-//                     getMovieTitles(genreId);
-//                 }
+                console.log('love calculator: ', data, data.percentage)
+                // check percentage amount to determine which genre to use in getMovieTitles
+                if (data.percentage >= 0 && data.percentage < 26) {
+                    let genreId = 27;
+                    getMovieTitles(genreId);
+                } else if (data.percentage >=26 && data.percentage < 51) {
+                    let genreId = 10752;
+                    getMovieTitles(genreId);
+                } else if (data.percentage >=51 && data.percentage < 76) {
+                    let genreId = 53;
+                    getMovieTitles(genreId);
+                } else {
+                    let genreId = 10749;
+                    getMovieTitles(genreId);
+                }
 
-//                 console.log('love calculator: ', data)
-//             })
-//     })
-//     .catch(err => {
-//         console.error(err);
-//     })
-// };
+                console.log('love calculator: ', data)
+            })
+    })
+    .catch(err => {
+        console.error(err);
+    })
+};
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
@@ -116,7 +118,7 @@ async function getMovieTitles(genreId) {
         // to generate a random result index from 0 - 19
         let randomResult = randomNum(0, 20);
         // await call makes the fetch call synchronous 
-        const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=10749&with_original_language=en&include_adult=true&page=" + randomPage);
+        const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=" + genreId + "&with_original_language=en&include_adult=true&page=" + randomPage);
 
         if (response.ok) {
             const data = await response.json();
@@ -128,7 +130,7 @@ async function getMovieTitles(genreId) {
                 // pull movie title from data object
                 const movieTitle = data.results[randomResult].title;
                 // push movie title to movieTitlesArray
-                movieTitlesArray.push(movieTitle);
+                movieTitlesArray.push(movieTitle)
                 // pull watch provider data
                 const streamingResponse = await fetch("https://api.themoviedb.org/3/movie/" + movieId + "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171")
 
@@ -136,18 +138,32 @@ async function getMovieTitles(genreId) {
                     const streamingData = await streamingResponse.json();
                     console.log(streamingData)
                     if (!streamingData.results.US) {
-                        console.log('Not Available to stream or rent on digital platforms');
+                        const watchProvider = 'Not Available to stream or rent on digital platforms';
+                        watchProviderArray.push(watchProvider);
                     }
                     else if (!streamingData.results.US.flatrate && !streamingData.results.US.rent) {
-                        console.log('Not Available to stream or rent on digital platforms');
+                        const watchProvider = 'Not Available to stream or rent on digital platforms';
+                        watchProviderArray.push(watchProvider);
                     }
                     else if (streamingData.results.US.flatrate) {
-                        console.log('Stream: ', streamingData.results.US.flatrate[0].provider_name);
+                        const watchProvider = 'Stream: ' + streamingData.results.US.flatrate[0].provider_name;
+                        watchProviderArray.push(watchProvider);
                     }
                     else {
-                        console.log('Rent: ', streamingData.results.US.rent[0].provider_name);
+                        const watchProvider = 'Rent: ' + streamingData.results.US.rent[0].provider_name;
+                        watchProviderArray.push(watchProvider);
                     }
                 }
+
+                // create movieObject from 2 arrays
+                movieObject = watchProviderArray.reduce(function (result, field, index) {
+                    result[movieTitlesArray[index]] = field;
+                    return result
+                }, {});
+
+                console.log(movieTitlesArray)
+                console.log(watchProviderArray)
+                console.log(movieObject);
 
                 // pull img file path for the poster
                 const tmdbImgPath = data.results[randomResult].poster_path;
@@ -170,4 +186,3 @@ async function getMovieTitles(genreId) {
     }
 };
 
-getMovieTitles();
