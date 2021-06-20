@@ -80,6 +80,23 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
     .then(response => {
         response.json()
             .then(function (data) {
+
+                console.log('love calculator: ', data, data.percentage)
+                // check percentage amount to determine which genre to use in getMovieTitles
+                if (data.percentage >= 0 && data.percentage < 26) {
+                    let genreId = 27;
+                    getMovieTitles(genreId);
+                } else if (data.percentage >=26 && data.percentage < 51) {
+                    let genreId = 10752;
+                    getMovieTitles(genreId);
+                } else if (data.percentage >=51 && data.percentage < 76) {
+                    let genreId = 53;
+                    getMovieTitles(genreId);
+                } else {
+                    let genreId = 10749;
+                    getMovieTitles(genreId);
+                }
+
                 console.log('love calculator: ', data)
             })
     })
@@ -88,27 +105,15 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
     })
 };
 
-// pull list of genres with ids
-// fetch("https://api.themoviedb.org/3/genre/movie/list?api_key=" + tmdbAPIKey + "&language=en-US")
-//     .then(function (response) {
-//         if (response.ok) {
-//             response.json()
-//                 .then(function (data) {
-//                     // console.log('genre id: ', data);
-//                 })
-//         }
-//     })
-
-
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
-async function getMovieTitles() {
+async function getMovieTitles(genreId) {
     while (movieTitlesArray.length < 5) {
         // to generate a random page number from 1 - 500
         let randomPage = randomNum(1, 501);
         // to generate a random result index from 0 - 19
         let randomResult = randomNum(0, 20);
         // await call makes the fetch call synchronous 
-        const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=10749&with_original_language=en&include_adult=true&page=" + randomPage);
+        const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=" + genreId + "&with_original_language=en&include_adult=true&page=" + randomPage);
 
         if (response.ok) {
             const data = await response.json();
@@ -138,8 +143,5 @@ async function getMovieTitles() {
             }
         }
     }
-}
-
-
-
+};
 
