@@ -53,7 +53,6 @@ let modalFormSubmitHandler = function (event) {
     // retrieve names from user inputs
     let userName = $("#nameInput1").val();
     let partnerName = $("#nameInput2").val();
-    console.log(userName, partnerName);
     if(userName && partnerName) {
         console.log(userName, partnerName);
         calculateCompatibility(userName, partnerName);
