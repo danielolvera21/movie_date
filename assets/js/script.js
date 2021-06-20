@@ -36,16 +36,41 @@ let movieTitlesArray = [];
 // API key for The Movie Database
 const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
 const tmdbImgSrcUrl = 'https://image.tmdb.org/t/p/w500'; // we can adjust the 'w500' size call by various sizes if adjusting with CSS makes it look weird.
-
+// love calc modal inputs and submit button
+let firstNameInputElement = document.querySelector("#nameInput1");
+let secondNameInputElement = document.querySelector("#nameInput2");
+let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
             // *** GLOBAL VARIABLES END *** //
-
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+
+// love calc modal form submission handler
+let modalFormSubmitHandler = function (event) {
+    event.preventDefault();
+    // retrieve names from user inputs
+    let userName = $("#nameInput1").val();
+    let partnerName = $("#nameInput2").val();
+    if(userName && partnerName) {
+        console.log(userName, partnerName);
+        calculateCompatibility(userName, partnerName);
+        firstNameInputElement.value = "";
+        secondNameInputElement.value = "";
+    } else {
+        alert("error")
+       // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
+    }
+};
+$("#loveCalcButton").click(modalFormSubmitHandler);
+
+
+
+
 // love calc fetch
-fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=Bleakney&sname=Bob", {
+function calculateCompatibility(name1, name2) {
+fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&sname=" + name2, {
     "method": "GET",
     "headers": {
         "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
@@ -55,23 +80,24 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=Bleakney&sname
     .then(response => {
         response.json()
             .then(function (data) {
-                // console.log('love calculator: ', data)
+                console.log('love calculator: ', data)
             })
     })
     .catch(err => {
         console.error(err);
-    });
+    })
+};
 
 // pull list of genres with ids
-fetch("https://api.themoviedb.org/3/genre/movie/list?api_key=" + tmdbAPIKey + "&language=en-US")
-    .then(function (response) {
-        if (response.ok) {
-            response.json()
-                .then(function (data) {
-                    // console.log('genre id: ', data);
-                })
-        }
-    })
+// fetch("https://api.themoviedb.org/3/genre/movie/list?api_key=" + tmdbAPIKey + "&language=en-US")
+//     .then(function (response) {
+//         if (response.ok) {
+//             response.json()
+//                 .then(function (data) {
+//                     // console.log('genre id: ', data);
+//                 })
+//         }
+//     })
 
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
@@ -114,6 +140,6 @@ async function getMovieTitles() {
     }
 }
 
-getMovieTitles();
+
 
 
