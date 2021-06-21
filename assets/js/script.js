@@ -91,7 +91,7 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
                     let genreId = 27;
                     getMovieTitles(genreId);
                 } else if (data.percentage >=26 && data.percentage < 51) {
-                    let genreId = 10752;
+                    let genreId = 18;
                     getMovieTitles(genreId);
                 } else if (data.percentage >=51 && data.percentage < 76) {
                     let genreId = 53;
