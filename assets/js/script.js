@@ -85,9 +85,8 @@ function calculateCompatibility(name1, name2) {
       headers: {
         "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
         "x-rapidapi-host": "love-calculator.p.rapidapi.com",
-      },
-    }
-  )
+      }
+    })
     .then(response => {
         response.json()
             .then(function (data) {
