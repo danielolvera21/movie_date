@@ -44,18 +44,11 @@ const tmdbImgSrcUrl = "https://image.tmdb.org/t/p/w500"; // we can adjust the 'w
 let modalElement = document.querySelector("#modal-close-outside");
 let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
-<<<<<<< HEAD
-let loveCalcButtonElement = document.querySelector(
-  "#modal-close-outside #loveCalcButton"
-);
-// *** GLOBAL VARIABLES END *** //
-=======
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
 
 let triggerModalElement = document.querySelector("#calculateButton")
             // *** GLOBAL VARIABLES END *** //
 
->>>>>>> develop
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
@@ -94,30 +87,7 @@ function calculateCompatibility(name1, name2) {
         "x-rapidapi-host": "love-calculator.p.rapidapi.com",
       },
     }
-<<<<<<< HEAD
   )
-    .then((response) => {
-      response.json().then(function (data) {
-        console.log("love calculator: ", data, data.percentage);
-        // check percentage amount to determine which genre to use in getMovieTitles
-        if (data.percentage >= 0 && data.percentage < 26) {
-          let genreId = 27;
-          getMovieTitles(genreId);
-        } else if (data.percentage >= 26 && data.percentage < 51) {
-          let genreId = 10752;
-          getMovieTitles(genreId);
-        } else if (data.percentage >= 51 && data.percentage < 76) {
-          let genreId = 53;
-          getMovieTitles(genreId);
-        } else {
-          let genreId = 10749;
-          getMovieTitles(genreId);
-        }
-
-        console.log("love calculator: ", data);
-      });
-=======
-})
     .then(response => {
         response.json()
             .then(function (data) {
@@ -154,7 +124,6 @@ function calculateCompatibility(name1, name2) {
     })
     .catch(err => {
         console.error(err);
->>>>>>> develop
     })
     .catch((err) => {
       console.error(err);
@@ -164,64 +133,6 @@ function calculateCompatibility(name1, name2) {
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
 async function getMovieTitles(genreId) {
-<<<<<<< HEAD
-  while (movieTitlesArray.length < 5) {
-    // to generate a random page number from 1 - 500
-    let randomPage = randomNum(1, 501);
-    // to generate a random result index from 0 - 19
-    let randomResult = randomNum(0, 20);
-    // await call makes the fetch call synchronous
-    const response = await fetch(
-      "https://api.themoviedb.org/3/discover/movie?api_key=" +
-        tmdbAPIKey +
-        "&language=en-US&sort_by=popularity.desc&with_genres=" +
-        genreId +
-        "&with_original_language=en&include_adult=true&page=" +
-        randomPage
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      console.log("movie title: ", data);
-      // if has an image url, push the movie title to the movieTitlesArray
-      if (data.results[randomResult].poster_path) {
-        // pull movie ID from data object
-        const movieId = data.results[randomResult].id;
-        // pull movie title from data object
-        const movieTitle = data.results[randomResult].title;
-        // push movie title to movieTitlesArray
-        movieTitlesArray.push(movieTitle);
-        // pull watch provider data
-        const streamingResponse = await fetch(
-          "https://api.themoviedb.org/3/movie/" +
-            movieId +
-            "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171"
-        );
-
-        if (streamingResponse.ok) {
-          const streamingData = await streamingResponse.json();
-          console.log(streamingData);
-          if (!streamingData.results.US) {
-            const watchProvider =
-              "Not Available to stream or rent on digital platforms";
-            watchProviderArray.push(watchProvider);
-          } else if (
-            !streamingData.results.US.flatrate &&
-            !streamingData.results.US.rent
-          ) {
-            const watchProvider =
-              "Not Available to stream or rent on digital platforms";
-            watchProviderArray.push(watchProvider);
-          } else if (streamingData.results.US.flatrate) {
-            const watchProvider =
-              "Stream: " + streamingData.results.US.flatrate[0].provider_name;
-            watchProviderArray.push(watchProvider);
-          } else {
-            const watchProvider =
-              "Rent: " + streamingData.results.US.rent[0].provider_name;
-            watchProviderArray.push(watchProvider);
-          }
-=======
     for(var i = 0; i < 7; i++) {
         // to generate a random page number from 1 - 500
         let randomPage = randomNum(1, 6);
@@ -296,7 +207,6 @@ async function getMovieTitles(genreId) {
                 }
                
             }
->>>>>>> develop
         }
 
         // create movieObject from 2 arrays
@@ -331,11 +241,7 @@ async function getMovieTitles(genreId) {
         // append image to body of DOM
         document.querySelector("body").appendChild(imgEL);
       }
-    }
-<<<<<<< HEAD
-  }
-}
-=======
+    
 
     function changeDisplay(name1, name2, percentage, genre) {
       let jumbotronStartElement = document.querySelector("#jumbotronStart");
@@ -351,7 +257,6 @@ async function getMovieTitles(genreId) {
     }
     
 
->>>>>>> develop
 
 //save names to local storage
 const saveNames = function () {
