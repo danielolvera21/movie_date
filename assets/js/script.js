@@ -1,4 +1,4 @@
-            // *** START PSEUDO CODE *** //
+// *** START PSEUDO CODE *** //
 
 // create a click handler for the 'love calculation button' (MVP)
 // on click, trigger modal to display (MVP)
@@ -28,11 +28,15 @@
 // If in 'now playing' - show release date, maybe a link to fandango to so they can search if movie is playing around them (NON MVP)
 // When user refreshes/revisits page getItems from local storage and recreate the search history couples (MVP)
 
-            // *** END PSEUDO CODE *** //        
+// *** END PSEUDO CODE *** //        
 
-            // *** GLOBAL VARIABLES START *** //
-// create an array for empty movie titles
+// *** GLOBAL VARIABLES START *** //
+// create an empty array for movie titles
 let movieTitlesArray = [];
+// create an empty array for watch providers
+let watchProviderArray = [];
+// create an empty array that'll combine the two above arrays to key:value pairs respectively
+let movieObject = {};
 // API key for The Movie Database
 const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
 const tmdbImgSrcUrl = 'https://image.tmdb.org/t/p/w500'; // we can adjust the 'w500' size call by various sizes if adjusting with CSS makes it look weird.
@@ -41,8 +45,10 @@ let modalElement = document.querySelector("#modal-close-outside");
 let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
+
 let triggerModalElement = document.querySelector("#calculateButton")
             // *** GLOBAL VARIABLES END *** //
+
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
@@ -92,8 +98,8 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
                     getMovieTitles(genreId);
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else if (data.percentage >=26 && data.percentage < 51) {
-                    let genreId = 10752;
-                    let genreName = "War";
+                    let genreId = 18;
+                    let genreName = "Drama";
                     getMovieTitles(genreId);
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else if (data.percentage >=51 && data.percentage < 76) {
@@ -119,10 +125,11 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
 };
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
+// TO DO: add back genreId parameter to function below
 async function getMovieTitles(genreId) {
     for(var i = 0; i < 7; i++) {
         // to generate a random page number from 1 - 500
-        let randomPage = randomNum(1, 501);
+        let randomPage = randomNum(1, 6);
         // to generate a random result index from 0 - 19
         let randomResult = randomNum(0, 20);
         // await call makes the fetch call synchronous 
@@ -133,10 +140,46 @@ async function getMovieTitles(genreId) {
             console.log('movie title: ', data);
             // if has an image url, push the movie title to the movieTitlesArray
             if (data.results[randomResult].poster_path) {
+                // pull movie ID from data object
+                const movieId = data.results[randomResult].id;
                 // pull movie title from data object
                 const movieTitle = data.results[randomResult].title;
                 // push movie title to movieTitlesArray
-                movieTitlesArray.push(movieTitle);
+                movieTitlesArray.push(movieTitle)
+                // pull watch provider data
+                const streamingResponse = await fetch("https://api.themoviedb.org/3/movie/" + movieId + "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171")
+
+                if (streamingResponse.ok) {
+                    const streamingData = await streamingResponse.json();
+                    console.log(streamingData)
+                    if (!streamingData.results.US) {
+                        const watchProvider = 'Not Available to stream or rent on digital platforms';
+                        watchProviderArray.push(watchProvider);
+                    }
+                    else if (!streamingData.results.US.flatrate && !streamingData.results.US.rent) {
+                        const watchProvider = 'Not Available to stream or rent on digital platforms';
+                        watchProviderArray.push(watchProvider);
+                    }
+                    else if (streamingData.results.US.flatrate) {
+                        const watchProvider = 'Stream: ' + streamingData.results.US.flatrate[0].provider_name;
+                        watchProviderArray.push(watchProvider);
+                    }
+                    else {
+                        const watchProvider = 'Rent: ' + streamingData.results.US.rent[0].provider_name;
+                        watchProviderArray.push(watchProvider);
+                    }
+                }
+
+                // create movieObject from 2 arrays
+                movieObject = watchProviderArray.reduce(function (result, field, index) {
+                    result[movieTitlesArray[index]] = field;
+                    return result
+                }, {});
+
+                console.log(movieTitlesArray)
+                console.log(watchProviderArray)
+                console.log(movieObject);
+
                 // pull img file path for the poster
                 const tmdbImgPath = data.results[randomResult].poster_path;
                 // create header for movie title
