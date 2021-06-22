@@ -37,9 +37,11 @@ let movieTitlesArray = [];
 const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
 const tmdbImgSrcUrl = 'https://image.tmdb.org/t/p/w500'; // we can adjust the 'w500' size call by various sizes if adjusting with CSS makes it look weird.
 // love calc modal inputs and submit button
+let modalElement = document.querySelector("#modal-close-outside");
 let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
+let triggerModalElement = document.querySelector("#calculateButton")
             // *** GLOBAL VARIABLES END *** //
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
@@ -81,23 +83,34 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
         response.json()
             .then(function (data) {
 
+
                 console.log('love calculator: ', data, data.percentage)
                 // check percentage amount to determine which genre to use in getMovieTitles
                 if (data.percentage >= 0 && data.percentage < 26) {
                     let genreId = 27;
+                    let genreName = "Horror";
                     getMovieTitles(genreId);
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else if (data.percentage >=26 && data.percentage < 51) {
                     let genreId = 10752;
+                    let genreName = "War";
                     getMovieTitles(genreId);
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else if (data.percentage >=51 && data.percentage < 76) {
                     let genreId = 53;
+                    let genreName = "Action"
                     getMovieTitles(genreId);
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else {
                     let genreId = 10749;
+                    let genreName = "Romance";
                     getMovieTitles(genreId);
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 }
 
                 console.log('love calculator: ', data)
+                console.log(genreId);
+                
             })
     })
     .catch(err => {
@@ -107,7 +120,7 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 async function getMovieTitles(genreId) {
-    while (movieTitlesArray.length < 5) {
+    for(var i = 0; i < 7; i++) {
         // to generate a random page number from 1 - 500
         let randomPage = randomNum(1, 501);
         // to generate a random result index from 0 - 19
@@ -133,15 +146,33 @@ async function getMovieTitles(genreId) {
                 // create img element
                 let imgEL = document.createElement('img');
                 imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
+                imgEL.setAttribute('class', "movieList");
                 // will change where the posters are being appended to once the containers are set up
-                // append textEl to movieTitleEL
-                movieTitleEl.appendChild(headerEl);
-                // append movie title to body of DOM
-                document.querySelector('body').appendChild(movieTitleEl);
-                // append image to body of DOM
-                document.querySelector('body').appendChild(imgEL);
+                 // append textEl to movieTitleEL
+        // movieTitleEl.appendChild(headerEl);
+        // append movie title to body of DOM
+        // document.querySelector('#movie' + i).appendChild(movieTitleEl);
+        // append image to body of DOM
+        document.querySelector('#movie' + i).appendChild(imgEL);
+
+                }
+               
             }
         }
     }
-};
+
+    function changeDisplay(name1, name2, percentage, genre) {
+      let jumbotronStartElement = document.querySelector("#jumbotronStart");
+      jumbotronStartElement.style.display = "none";
+      triggerModalElement.textContent = "Try Again?";
+      triggerModalElement.style.margin = "1rem";
+      let jumbotronEndElement = document.querySelector("#jumbotronEnd");
+      let endingHeadline = document.createElement("h3");
+      endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
+      jumbotronEndElement.appendChild(endingHeadline);
+      
+
+    }
+    
+
 
