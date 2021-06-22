@@ -19,6 +19,7 @@ h1 {
     font-weight: 600;
     text-shadow: 1px 1px 2px #81868a;
 }
+
 .jumbotron h2, .jumbotron h3{
     margin: 2rem 2rem 2rem 2rem;
     text-align: center;
@@ -74,4 +75,21 @@ h1 {
 .calculatePercentageButton {
     margin-top: 1rem;
 
+}
+
+.moviesList, li {
+    padding-top: 1rem;
+    width: 50%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#jumbotronEnd h3 {
+padding-left: 8rem;
+padding-right: 8rem;
+padding-bottom: 0rem;
+margin-bottom: 0rem;
 }
