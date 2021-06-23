@@ -17,11 +17,43 @@ body, h1, h2, h3, h4, h5, h6, p, .button-centered{
 h1 {
     margin: 1.5rem 1rem 1rem 2.5rem; 
     font-weight: 600;
-    text-shadow: 1px 1px 2px #81868a;
+    
+}
+header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+header nav ul {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    list-style: none;
+    flex-direction: row;
+    margin-right: 2.5rem;
+    width: 100%
+}
+header nav li {
+    margin-right: 2.5rem;
 }
 
+a {
+    text-decoration: none;
+    color:rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px rgb(238,174,202), -2px -2px 2px rgb(148,187,233);
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgb(235, 239, 247);
+    text-shadow: 2px 2px 2px rgb(238,174,202), -2px -2px 2px rgb(148,187,233);
+}
+
+
+
 .jumbotron h2, .jumbotron h3{
-    margin: 2rem 2rem 2rem 2rem;
+    margin: 2rem 8rem 2rem 8rem;
     text-align: center;
     font-style: italic;
     text-shadow: 1px 1px 2px #81868a;
@@ -85,6 +117,10 @@ h1 {
     justify-content: center;
     align-items: center;
     text-align: center;
+}
+
+#jumbotronStart h2 {
+margin-top: 5rem;
 }
 
 #jumbotronEnd h3 {

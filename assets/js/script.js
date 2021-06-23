@@ -47,7 +47,10 @@ let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
 
 let triggerModalElement = document.querySelector("#calculateButton")
+let modal = UIkit.modal("#modal-close-outside");
             // *** GLOBAL VARIABLES END *** //
+
+
 
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
@@ -62,11 +65,14 @@ let modalFormSubmitHandler = function (event) {
     let userName = $("#nameInput1").val();
     let partnerName = $("#nameInput2").val();
     if(userName && partnerName) {
+        
         console.log(userName, partnerName);
         calculateCompatibility(userName, partnerName);
         firstNameInputElement.value = "";
         secondNameInputElement.value = "";
+        modal.hide();
     } else {
+        modal.show();
         alert("error")
        // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
     }
@@ -222,5 +228,3 @@ async function getMovieTitles(genreId) {
 
     }
     
-
-
