@@ -174,6 +174,8 @@ async function getMovieTitles(genreId) {
                 // create img element
                 let imgEL = document.createElement('img');
                 imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
+                //titles as alt text for movie posters
+                imgEL.alt = movieTitle
                 // will change where the posters are being appended to once the containers are set up
                 // append textEl to movieTitleEL
                 movieTitleEl.appendChild(headerEl);
