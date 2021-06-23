@@ -9,7 +9,7 @@ html{
     background: rgb(238,174,202);
 background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%); 
 }
-body, h1, h2, h3, h4, h5, h6, p, .button-centered{
+body, h1, h2, h3, h4, h5, h6, p, .button-centered, #tryAgainButton {
     color: rgb(255, 255, 255);
     font-family: 'Poppins', sans-serif;
     font-weight:600;
@@ -60,7 +60,7 @@ a:hover {
 
 }
 
-.button-centered:hover {
+.button-centered:hover, #tryAgainButton:hover {
     color: #80b8f8;
     border-color: #80b8f8;
 }
@@ -128,4 +128,8 @@ padding-left: 8rem;
 padding-right: 8rem;
 padding-bottom: 0rem;
 margin-bottom: 0rem;
+}
+
+#tryAgainButton {
+    margin: 1rem 0 1rem 0
 }

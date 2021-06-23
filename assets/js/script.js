@@ -48,7 +48,9 @@ let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCa
 
 let triggerModalElement = document.querySelector("#calculateButton")
 let modal = UIkit.modal("#modal-close-outside");
+let tryAgainButtonElement = document.createElement("button");
             // *** GLOBAL VARIABLES END *** //
+
 
 
 
@@ -65,7 +67,6 @@ let modalFormSubmitHandler = function (event) {
     let userName = $("#nameInput1").val();
     let partnerName = $("#nameInput2").val();
     if(userName && partnerName) {
-        
         console.log(userName, partnerName);
         calculateCompatibility(userName, partnerName);
         firstNameInputElement.value = "";
@@ -215,16 +216,22 @@ async function getMovieTitles(genreId) {
         }
     }
 
-    function changeDisplay(name1, name2, percentage, genre) {
+    async function changeDisplay(name1, name2, percentage, genre) {
       let jumbotronStartElement = document.querySelector("#jumbotronStart");
       jumbotronStartElement.style.display = "none";
-      triggerModalElement.textContent = "Try Again?";
-      triggerModalElement.style.margin = "1rem";
+      triggerModalElement.style.display = "none";
       let jumbotronEndElement = document.querySelector("#jumbotronEnd");
       let endingHeadline = document.createElement("h3");
       endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
       jumbotronEndElement.appendChild(endingHeadline);
-      
-
+      tryAgainButtonElement.setAttribute("type", "button");
+      tryAgainButtonElement.setAttribute("id", "tryAgainButton");
+      tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
+      tryAgainButtonElement.textContent = "Try Again?";
+      let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
+      calculateButtonContainerElement.appendChild(tryAgainButtonElement);
     }
     
+    tryAgainButtonElement.addEventListener("click", function(){
+        location.reload();
+    })
