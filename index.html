@@ -22,16 +22,9 @@
     <header>
       <h1>MOVIE &#10084; DATE</h1>
     </header>
-    <!--jumbotron??-->
-    <section class="jumbotron">
-      <h2>
-        Is your relationship destined for true love like The Notebook? Or is it bound to hit an iceberg like Titanic?
-      </h2>
-      <h3>Calculate your compatibility and watch the movie you deserve &#10084;</h3>
+    <section class="jumbotron" id="jumbotronEnd">
+
     </section>
-<div class="calculate-btn-container">
-    <button class="uk-button uk-button-default uk-button-large button-centered" id="calculateButton" type="button" uk-toggle="target: #modal-close-outside">Calculate Now</button>
-    </div>
 
 <!-- This is the modal with the outside close button -->
 <div id="modal-close-outside" uk-modal>
@@ -51,6 +44,48 @@
         
     </div>
 </div>
+
+<!-- MOVIE POSTER CAROUSEL -->
+<section class="moviesList">
+    <div class="uk-position-relative uk-visible-toggle uk-light" tabindex="-1" uk-slider="center: true">
+
+            <ul class="uk-slider-items uk-grid">
+                <li>
+                    <div class="movieContainer uk-panel" id="movie0"></div>
+                </li>
+                <li>
+                    <div class="movieContainer uk-panel" id="movie1"></div>
+                </li>
+                <li>
+                    <div class="movieContainer uk-panel" id="movie2"></div>
+                </li>
+                <li>
+                    <div class="movieContainer uk-panel" id="movie3"></div>
+                </li>
+                <li>
+                    <div class="movieContainer uk-panel" id="movie4"></div>
+                </li>
+                <li>
+                    <div class="movieContainer uk-panel" id="movie5"></div>
+                </li>
+            </ul>
+            <a class="uk-position-center-left uk-position-small uk-hidden-hover" href="#" uk-slidenav-previous uk-slider-item="previous"></a>
+    <a class="uk-position-center-right uk-position-small uk-hidden-hover" href="#" uk-slidenav-next uk-slider-item="next"></a>
+        </div>
+    </section>
+
+
+
+<!-- STARTING JUMBOTRON -->
+<section class="jumbotron" id="jumbotronStart">
+    <h2>
+      Is your relationship destined for true love like The Notebook? Or is it bound to hit an iceberg like Titanic?
+    </h2>
+    <h3>Calculate your compatibility and watch the movie you deserve</h3>
+  </section>
+<div class="calculate-btn-container">
+  <button class="uk-button uk-button-default uk-button-large button-centered" id="calculateButton" type="button" uk-toggle="target: #modal-close-outside">Calculate Now</button>
+  </div>
 
     <!-- UIkit JS -->
     <script src="https://cdn.jsdelivr.net/npm/uikit@3.6.22/dist/js/uikit.min.js"></script>
