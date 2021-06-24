@@ -1,0 +1,135 @@
+/* GLOBALS STYLES */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+html{
+    background: rgb(238,174,202);
+background: radial-gradient(circle, rgba(238,174,202,1) 0%, rgba(148,187,233,1) 100%); 
+}
+body, h1, h2, h3, h4, h5, h6, p, .button-centered, #tryAgainButton {
+    color: rgb(255, 255, 255);
+    font-family: 'Poppins', sans-serif;
+    font-weight:600;
+}
+h1 {
+    margin: 1.5rem 1rem 1rem 2.5rem; 
+    font-weight: 600;
+    
+}
+header {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    justify-content: space-between;
+}
+header nav ul {
+    display: flex;
+    align-items: center;
+    align-content: center;
+    list-style: none;
+    flex-direction: row;
+    margin-right: 2.5rem;
+    width: 100%
+}
+header nav li {
+    margin-right: 2.5rem;
+}
+
+a {
+    text-decoration: none;
+    color:rgb(255, 255, 255);
+    text-shadow: 2px 2px 2px rgb(238,174,202), -2px -2px 2px rgb(148,187,233);
+}
+
+a:hover {
+    text-decoration: none;
+    color: rgb(235, 239, 247);
+    text-shadow: 2px 2px 2px rgb(238,174,202), -2px -2px 2px rgb(148,187,233);
+}
+
+
+
+.jumbotron h2, .jumbotron h3{
+    margin: 2rem 8rem 2rem 8rem;
+    text-align: center;
+    font-style: italic;
+    text-shadow: 1px 1px 2px #81868a;
+
+}
+
+.button-centered:hover, #tryAgainButton:hover {
+    color: #80b8f8;
+    border-color: #80b8f8;
+}
+
+.calculate-btn-container{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+
+/* LOVE CALC MODAL STYLES */
+.loveCalcModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    background-color: rgba(255, 255, 255, .9);
+}
+
+.loveCalcModal h2, .loveCalcModal p, .loveCalcModal label, .loveCalcModal button {
+    color: #80b8f8
+}
+.loveCalcModal label, .loveCalcModal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+.loveCalcModal p {
+    line-height: 0;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.loveCalcModal h2 {
+    text-align: center;
+    font-weight: 400;
+    font-style: italic;
+}
+
+.calculatePercentageButton {
+    margin-top: 1rem;
+
+}
+
+.moviesList, li {
+    padding-top: 1rem;
+    width: 50%;
+    margin: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}
+
+#jumbotronStart h2 {
+margin-top: 5rem;
+}
+
+#jumbotronEnd h3 {
+padding-left: 8rem;
+padding-right: 8rem;
+padding-bottom: 0rem;
+margin-bottom: 0rem;
+}
+
+#tryAgainButton {
+    margin: 1rem 0 1rem 0
+}
