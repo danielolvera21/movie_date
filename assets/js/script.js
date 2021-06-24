@@ -37,6 +37,9 @@ let movieTitlesArray = [];
 let watchProviderArray = [];
 // create an empty array that'll combine the two above arrays to key:value pairs respectively
 let movieObject = {};
+
+// CREATE JSON for data storage
+let userOutputJSON = {loveCalcResults:[], posters:[]};
 // API key for The Movie Database
 const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
 const tmdbImgSrcUrl = 'https://image.tmdb.org/t/p/w500'; // we can adjust the 'w500' size call by various sizes if adjusting with CSS makes it look weird.
@@ -67,7 +70,6 @@ let modalFormSubmitHandler = function (event) {
     let userName = $("#nameInput1").val();
     let partnerName = $("#nameInput2").val();
     if(userName && partnerName) {
-        console.log(userName, partnerName);
         calculateCompatibility(userName, partnerName);
         firstNameInputElement.value = "";
         secondNameInputElement.value = "";
@@ -96,8 +98,6 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
         response.json()
             .then(function (data) {
 
-
-                console.log('love calculator: ', data, data.percentage)
                 // check percentage amount to determine which genre to use in getMovieTitles
                 if (data.percentage >= 0 && data.percentage < 26) {
                     let genreId = 27;
@@ -117,12 +117,9 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
                 } else {
                     let genreId = 10749;
                     let genreName = "Romance";
-                    getMovieTitles(genreId);
+                    getMovieTitles(genreId, data.fname, data.sname, data.percentage, genreName );
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 }
-
-                console.log('love calculator: ', data)
-                console.log(genreId);
                 
             })
     })
@@ -133,7 +130,7 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
-async function getMovieTitles(genreId) {
+async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
     for(var i = 0; i < 7; i++) {
         // to generate a random page number from 1 - 500
         let randomPage = randomNum(1, 6);
@@ -144,7 +141,6 @@ async function getMovieTitles(genreId) {
 
         if (response.ok) {
             const data = await response.json();
-            console.log('movie title: ', data);
             // if has an image url, push the movie title to the movieTitlesArray
             if (data.results[randomResult].poster_path) {
                 // pull movie ID from data object
@@ -158,7 +154,6 @@ async function getMovieTitles(genreId) {
 
                 if (streamingResponse.ok) {
                     const streamingData = await streamingResponse.json();
-                    console.log(streamingData)
                     if (!streamingData.results.US) {
                         const watchProvider = 'Not Available to stream or rent on digital platforms';
                         watchProviderArray.push(watchProvider);
@@ -183,12 +178,13 @@ async function getMovieTitles(genreId) {
                     return result
                 }, {});
 
-                console.log(movieTitlesArray)
-                console.log(watchProviderArray)
-                console.log(movieObject);
+                // console.log(movieTitlesArray)
+                // console.log(watchProviderArray)
+                // console.log(movieObject);
 
                 // pull img file path for the poster
                 const tmdbImgPath = data.results[randomResult].poster_path;
+                
                 // create header for movie title
                 let movieTitleEl = document.createElement('H1')
                 // create text of h1 header
@@ -196,7 +192,8 @@ async function getMovieTitles(genreId) {
                 // create img element
                 let imgEL = document.createElement('img');
                 imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
-
+                let imgURL = imgEL.src;
+                userOutputJSON.posters.push(imgURL);
                 //titles as alt text for movie posters
                 imgEL.alt = movieTitle
 
@@ -214,6 +211,10 @@ async function getMovieTitles(genreId) {
                
             }
         }
+        userOutputJSON.loveCalcResults.push(name1, name2, percentage, genreName);
+        let finalJSON = userOutputJSON;
+        console.log(finalJSON);
+        dataPersistance(finalJSON);
     }
 
     async function changeDisplay(name1, name2, percentage, genre) {
@@ -235,3 +236,17 @@ async function getMovieTitles(genreId) {
     tryAgainButtonElement.addEventListener("click", function(){
         location.reload();
     })
+
+    // set up localStorage
+let dataPersistance = function(dataObject) {
+    // send JSON to localStorage
+let stringifyData = JSON.stringify(dataObject);
+localStorage.setItem("userOutput", stringifyData);
+// let retrievedData = localStorage.getItem(dataObject);
+//  let parsedData = JSON.parse(retrievedData);
+//  console.log(parsedData);
+
+
+
+ 
+}
