@@ -45,6 +45,7 @@ let modalElement = document.querySelector("#modal-close-outside");
 let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
+const jumbotronEndElement = document.querySelector('#jumbotronEnd');
 
 let triggerModalElement = document.querySelector("#calculateButton")
             // *** GLOBAL VARIABLES END *** //
@@ -95,21 +96,26 @@ fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&
                 if (data.percentage >= 0 && data.percentage < 26) {
                     let genreId = 27;
                     let genreName = "Horror";
+                    jumbotronEndElement.innerHTML= '';
                     getMovieTitles(genreId);
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else if (data.percentage >=26 && data.percentage < 51) {
                     let genreId = 18;
                     let genreName = "Drama";
+                    const h3El = jumbotronEndElement.lastElementChild;
+                    jumbotronEndElement.innerHTML= '';
                     getMovieTitles(genreId);
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else if (data.percentage >=51 && data.percentage < 76) {
                     let genreId = 53;
                     let genreName = "Action"
+                    jumbotronEndElement.innerHTML= '';
                     getMovieTitles(genreId);
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 } else {
                     let genreId = 10749;
                     let genreName = "Romance";
+                    jumbotronEndElement.innerHTML= '';
                     getMovieTitles(genreId);
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 }
