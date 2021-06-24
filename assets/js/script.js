@@ -23,12 +23,12 @@
 // append to page (MVP)
 // When user clicks movie poster image:
 // open a new tab to the IMDB movie page (url syntax: https://www.imdb.com/title/<imdb movie ID> ) (NON MVP)
-// have a modal pop up that shows: 
+// have a modal pop up that shows:
 // what streaming platforms its on (MVP if possible)
 // If in 'now playing' - show release date, maybe a link to fandango to so they can search if movie is playing around them (NON MVP)
 // When user refreshes/revisits page getItems from local storage and recreate the search history couples (MVP)
 
-// *** END PSEUDO CODE *** //        
+// *** END PSEUDO CODE *** //
 
 // *** GLOBAL VARIABLES START *** //
 // create an empty array for movie titles
@@ -39,214 +39,274 @@ let watchProviderArray = [];
 let movieObject = {};
 
 // CREATE JSON for data storage
-let userOutputJSON = {loveCalcResults:[], posters:[]};
+let userOutputJSON = [
+//   { loveCalcResults: [], posters: [] },
+//   { loveCalcResults: [], posters: [] },
+//   { loveCalcResults: [], posters: [] },
+//   { loveCalcResults: [], posters: [] },
+//   { loveCalcResults: [], posters: [] },
+];
 // API key for The Movie Database
-const tmdbAPIKey = '1363fbaac30c0fbba8280edaf170a171';
-const tmdbImgSrcUrl = 'https://image.tmdb.org/t/p/w500'; // we can adjust the 'w500' size call by various sizes if adjusting with CSS makes it look weird.
+const tmdbAPIKey = "1363fbaac30c0fbba8280edaf170a171";
+const tmdbImgSrcUrl = "https://image.tmdb.org/t/p/w500"; // we can adjust the 'w500' size call by various sizes if adjusting with CSS makes it look weird.
 // love calc modal inputs and submit button
 let modalElement = document.querySelector("#modal-close-outside");
 let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
-let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
+let loveCalcButtonElement = document.querySelector(
+  "#modal-close-outside #loveCalcButton"
+);
 
-let triggerModalElement = document.querySelector("#calculateButton")
+let triggerModalElement = document.querySelector("#calculateButton");
 let modal = UIkit.modal("#modal-close-outside");
 let tryAgainButtonElement = document.createElement("button");
-            // *** GLOBAL VARIABLES END *** //
-
-
-
+// *** GLOBAL VARIABLES END *** //
 
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
-    return Math.floor(Math.random() * (max - min) + min);
+  return Math.floor(Math.random() * (max - min) + min);
 }
-
 
 // love calc modal form submission handler
 let modalFormSubmitHandler = function (event) {
-    event.preventDefault();
-    // retrieve names from user inputs
-    let userName = $("#nameInput1").val();
-    let partnerName = $("#nameInput2").val();
-    if(userName && partnerName) {
-        calculateCompatibility(userName, partnerName);
-        firstNameInputElement.value = "";
-        secondNameInputElement.value = "";
-        modal.hide();
-    } else {
-        modal.show();
-        alert("error")
-       // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
-    }
+  event.preventDefault();
+  // retrieve names from user inputs
+  let userName = $("#nameInput1").val();
+  let partnerName = $("#nameInput2").val();
+  if (userName && partnerName) {
+    calculateCompatibility(userName, partnerName);
+    firstNameInputElement.value = "";
+    secondNameInputElement.value = "";
+    modal.hide();
+  } else {
+    modal.show();
+    alert("error");
+    // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
+  }
 };
 $("#loveCalcButton").click(modalFormSubmitHandler);
 
-
-
-
 // love calc fetch
 function calculateCompatibility(name1, name2) {
-fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&sname=" + name2, {
-    "method": "GET",
-    "headers": {
+  fetch(
+    "https://love-calculator.p.rapidapi.com/getPercentage?fname=" +
+      name1 +
+      "&sname=" +
+      name2,
+    {
+      method: "GET",
+      headers: {
         "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
-        "x-rapidapi-host": "love-calculator.p.rapidapi.com"
+        "x-rapidapi-host": "love-calculator.p.rapidapi.com",
+      },
     }
-})
-    .then(response => {
-        response.json()
-            .then(function (data) {
-
-                // check percentage amount to determine which genre to use in getMovieTitles
-                if (data.percentage >= 0 && data.percentage < 26) {
-                    let genreId = 27;
-                    let genreName = "Horror";
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else if (data.percentage >=26 && data.percentage < 51) {
-                    let genreId = 18;
-                    let genreName = "Drama";
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else if (data.percentage >=51 && data.percentage < 76) {
-                    let genreId = 53;
-                    let genreName = "Action"
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else {
-                    let genreId = 10749;
-                    let genreName = "Romance";
-                    getMovieTitles(genreId, data.fname, data.sname, data.percentage, genreName );
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                }
-                
-            })
+  )
+    .then((response) => {
+      response.json().then(function (data) {
+        // check percentage amount to determine which genre to use in getMovieTitles
+        if (data.percentage >= 0 && data.percentage < 26) {
+          let genreId = 27;
+          let genreName = "Horror";
+          getMovieTitles(
+            genreId,
+            data.fname,
+            data.sname,
+            data.percentage,
+            genreName
+          );
+          changeDisplay(data.fname, data.sname, data.percentage, genreName);
+        } else if (data.percentage >= 26 && data.percentage < 51) {
+          let genreId = 18;
+          let genreName = "Drama";
+          getMovieTitles(
+            genreId,
+            data.fname,
+            data.sname,
+            data.percentage,
+            genreName
+          );
+          changeDisplay(data.fname, data.sname, data.percentage, genreName);
+        } else if (data.percentage >= 51 && data.percentage < 76) {
+          let genreId = 53;
+          let genreName = "Action";
+          getMovieTitles(
+            genreId,
+            data.fname,
+            data.sname,
+            data.percentage,
+            genreName
+          );
+          changeDisplay(data.fname, data.sname, data.percentage, genreName);
+        } else {
+          let genreId = 10749;
+          let genreName = "Romance";
+          getMovieTitles(
+            genreId,
+            data.fname,
+            data.sname,
+            data.percentage,
+            genreName
+          );
+          changeDisplay(data.fname, data.sname, data.percentage, genreName);
+        }
+      });
     })
-    .catch(err => {
-        console.error(err);
-    })
-};
+    .catch((err) => {
+      console.error(err);
+    });
+}
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
 async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
-    for(var i = 0; i < 7; i++) {
-        // to generate a random page number from 1 - 500
-        let randomPage = randomNum(1, 6);
-        // to generate a random result index from 0 - 19
-        let randomResult = randomNum(0, 20);
-        // await call makes the fetch call synchronous 
-        const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=" + genreId + "&with_original_language=en&include_adult=true&page=" + randomPage);
+    let loveCalcResultsObj = {loveCalcResults: [], posters: []};
+    loveCalcResultsObj.loveCalcResults.push(name1, name2, percentage, genreName);
+//   userOutputJSON[0].loveCalcResults.push(name1, name2, percentage, genreName);
+  for (var i = 0; i < 7; i++) {
+    // to generate a random page number from 1 - 500
+    let randomPage = randomNum(1, 6);
+    // to generate a random result index from 0 - 19
+    let randomResult = randomNum(0, 20);
+    // await call makes the fetch call synchronous
+    const response = await fetch(
+      "https://api.themoviedb.org/3/discover/movie?api_key=" +
+        tmdbAPIKey +
+        "&language=en-US&sort_by=popularity.desc&with_genres=" +
+        genreId +
+        "&with_original_language=en&include_adult=true&page=" +
+        randomPage
+    );
 
-        if (response.ok) {
-            const data = await response.json();
-            // if has an image url, push the movie title to the movieTitlesArray
-            if (data.results[randomResult].poster_path) {
-                // pull movie ID from data object
-                const movieId = data.results[randomResult].id;
-                // pull movie title from data object
-                const movieTitle = data.results[randomResult].title;
-                // push movie title to movieTitlesArray
-                movieTitlesArray.push(movieTitle)
-                // pull watch provider data
-                const streamingResponse = await fetch("https://api.themoviedb.org/3/movie/" + movieId + "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171")
+    if (response.ok) {
+      const data = await response.json();
+      // if has an image url, push the movie title to the movieTitlesArray
+      if (data.results[randomResult].poster_path) {
+        // pull movie ID from data object
+        const movieId = data.results[randomResult].id;
+        // pull movie title from data object
+        const movieTitle = data.results[randomResult].title;
+        // push movie title to movieTitlesArray
+        movieTitlesArray.push(movieTitle);
+        // pull watch provider data
+        const streamingResponse = await fetch(
+          "https://api.themoviedb.org/3/movie/" +
+            movieId +
+            "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171"
+        );
 
-                if (streamingResponse.ok) {
-                    const streamingData = await streamingResponse.json();
-                    if (!streamingData.results.US) {
-                        const watchProvider = 'Not Available to stream or rent on digital platforms';
-                        watchProviderArray.push(watchProvider);
-                    }
-                    else if (!streamingData.results.US.flatrate && !streamingData.results.US.rent) {
-                        const watchProvider = 'Not Available to stream or rent on digital platforms';
-                        watchProviderArray.push(watchProvider);
-                    }
-                    else if (streamingData.results.US.flatrate) {
-                        const watchProvider = 'Stream: ' + streamingData.results.US.flatrate[0].provider_name;
-                        watchProviderArray.push(watchProvider);
-                    }
-                    else {
-                        const watchProvider = 'Rent: ' + streamingData.results.US.rent[0].provider_name;
-                        watchProviderArray.push(watchProvider);
-                    }
-                }
-
-                // create movieObject from 2 arrays
-                movieObject = watchProviderArray.reduce(function (result, field, index) {
-                    result[movieTitlesArray[index]] = field;
-                    return result
-                }, {});
-
-                // console.log(movieTitlesArray)
-                // console.log(watchProviderArray)
-                // console.log(movieObject);
-
-                // pull img file path for the poster
-                const tmdbImgPath = data.results[randomResult].poster_path;
-                
-                // create header for movie title
-                let movieTitleEl = document.createElement('H1')
-                // create text of h1 header
-                let headerEl = document.createTextNode(movieTitle);
-                // create img element
-                let imgEL = document.createElement('img');
-                imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
-                let imgURL = imgEL.src;
-                userOutputJSON.posters.push(imgURL);
-                //titles as alt text for movie posters
-                imgEL.alt = movieTitle
-
-                imgEL.setAttribute('class', "movieList");
-
-                // will change where the posters are being appended to once the containers are set up
-                 // append textEl to movieTitleEL
-        // movieTitleEl.appendChild(headerEl);
-        // append movie title to body of DOM
-        // document.querySelector('#movie' + i).appendChild(movieTitleEl);
-        // append image to body of DOM
-        document.querySelector('#movie' + i).appendChild(imgEL);
-
-                }
-               
-            }
+        if (streamingResponse.ok) {
+          const streamingData = await streamingResponse.json();
+          if (!streamingData.results.US) {
+            const watchProvider =
+              "Not Available to stream or rent on digital platforms";
+            watchProviderArray.push(watchProvider);
+          } else if (
+            !streamingData.results.US.flatrate &&
+            !streamingData.results.US.rent
+          ) {
+            const watchProvider =
+              "Not Available to stream or rent on digital platforms";
+            watchProviderArray.push(watchProvider);
+          } else if (streamingData.results.US.flatrate) {
+            const watchProvider =
+              "Stream: " + streamingData.results.US.flatrate[0].provider_name;
+            watchProviderArray.push(watchProvider);
+          } else {
+            const watchProvider =
+              "Rent: " + streamingData.results.US.rent[0].provider_name;
+            watchProviderArray.push(watchProvider);
+          }
         }
-        userOutputJSON.loveCalcResults.push(name1, name2, percentage, genreName);
-        let finalJSON = userOutputJSON;
-        console.log(finalJSON);
-        dataPersistance(finalJSON);
+
+        // create movieObject from 2 arrays
+        movieObject = watchProviderArray.reduce(function (
+          result,
+          field,
+          index
+        ) {
+          result[movieTitlesArray[index]] = field;
+          return result;
+        },
+        {});
+
+        // console.log(movieTitlesArray)
+        // console.log(watchProviderArray)
+        // console.log(movieObject);
+
+        // pull img file path for the poster
+        const tmdbImgPath = data.results[randomResult].poster_path;
+
+        // create header for movie title
+        let movieTitleEl = document.createElement("H1");
+        // create text of h1 header
+        let headerEl = document.createTextNode(movieTitle);
+        // create img element
+        let imgEL = document.createElement("img");
+        imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
+        let imgURL = imgEL.src;
+        loveCalcResultsObj.posters.push(imgURL);
+        dataPersistence(loveCalcResultsObj);
+        //titles as alt text for movie posters
+        imgEL.alt = movieTitle;
+
+        imgEL.setAttribute("class", "movieList");
+        let movieContainer = document.querySelector("#movie" + i);
+        movieContainer.appendChild(imgEL);
+      }
     }
-
-    async function changeDisplay(name1, name2, percentage, genre) {
-      let jumbotronStartElement = document.querySelector("#jumbotronStart");
-      jumbotronStartElement.style.display = "none";
-      triggerModalElement.style.display = "none";
-      let jumbotronEndElement = document.querySelector("#jumbotronEnd");
-      let endingHeadline = document.createElement("h3");
-      endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
-      jumbotronEndElement.appendChild(endingHeadline);
-      tryAgainButtonElement.setAttribute("type", "button");
-      tryAgainButtonElement.setAttribute("id", "tryAgainButton");
-      tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
-      tryAgainButtonElement.textContent = "Try Again?";
-      let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
-      calculateButtonContainerElement.appendChild(tryAgainButtonElement);
-    }
-    
-    tryAgainButtonElement.addEventListener("click", function(){
-        location.reload();
-    })
-
-    // set up localStorage
-let dataPersistance = function(dataObject) {
-    // send JSON to localStorage
-let stringifyData = JSON.stringify(dataObject);
-localStorage.setItem("userOutput", stringifyData);
-// let retrievedData = localStorage.getItem(dataObject);
-//  let parsedData = JSON.parse(retrievedData);
-//  console.log(parsedData);
-
-
-
- 
+  }
 }
+
+async function changeDisplay(name1, name2, percentage, genre) {
+  let jumbotronStartElement = document.querySelector("#jumbotronStart");
+  jumbotronStartElement.style.display = "none";
+  triggerModalElement.style.display = "none";
+  let jumbotronEndElement = document.querySelector("#jumbotronEnd");
+  let endingHeadline = document.createElement("h3");
+  endingHeadline.textContent =
+    name1 +
+    " and " +
+    name2 +
+    ", your compatibility score is " +
+    percentage +
+    "%! For a score like that, we recommend these " +
+    genre +
+    " films:";
+  jumbotronEndElement.appendChild(endingHeadline);
+  tryAgainButtonElement.setAttribute("type", "button");
+  tryAgainButtonElement.setAttribute("id", "tryAgainButton");
+  tryAgainButtonElement.setAttribute(
+    "class",
+    "uk-button uk-button-default uk-button-large button-centered"
+  );
+  tryAgainButtonElement.textContent = "Try Again?";
+  let calculateButtonContainerElement = document.querySelector(
+    ".calculate-btn-container"
+  );
+  calculateButtonContainerElement.appendChild(tryAgainButtonElement);
+}
+
+tryAgainButtonElement.addEventListener("click", function () {
+  location.reload();
+});
+
+// set up localStorage
+let dataPersistence = function (dataObject) {
+  // send JSON to localStorage
+  if (dataObject.posters.length !== 6) {
+    return;
+  } else {
+      if(JSON.parse(localStorage.getItem("userOutput:"))) {
+        let previousOutputs = JSON.parse(localStorage.getItem("userOutput:"));
+        console.log(previousOutputs);
+        userOutputJSON.unshift(previousOutputs);
+        userOutputJSON.push(dataObject);
+        localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
+    } else {
+    userOutputJSON.push(dataObject);
+    let stringifyData = JSON.stringify(userOutputJSON);
+    localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
+    }
+  }
+};
+
