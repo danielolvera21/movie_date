@@ -14,6 +14,9 @@ body, h1, h2, h3, h4, h5, h6, p, .button-centered, #tryAgainButton {
     font-family: 'Poppins', sans-serif;
     font-weight:600;
 }
+
+
+/* HEADER STYLES */
 h1 {
     margin: 1.5rem 1rem 1rem 2.5rem; 
     font-weight: 600;
@@ -51,7 +54,7 @@ a:hover {
 }
 
 
-
+/* JUMBOTRON STYLES */
 .jumbotron h2, .jumbotron h3{
     margin: 2rem 8rem 2rem 8rem;
     text-align: center;
@@ -72,7 +75,7 @@ a:hover {
 }
 
 
-/* LOVE CALC MODAL STYLES */
+/* MODAL STYLES */
 .loveCalcModal {
     display: flex;
     flex-direction: column;
@@ -119,6 +122,8 @@ a:hover {
     text-align: center;
 }
 
+
+/* ID ELEMENT STYLES */
 #jumbotronStart h2 {
 margin-top: 5rem;
 }
