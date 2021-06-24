@@ -55,6 +55,10 @@ function randomNum(min, max) {
     return Math.floor(Math.random() * (max - min) + min);
 }
 
+// to capitalize first letter
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
 
 // love calc modal form submission handler
 let modalFormSubmitHandler = function (event) {
@@ -232,7 +236,7 @@ function changeDisplay(name1, name2, percentage, genre) {
     triggerModalElement.style.margin = "1rem";
     let jumbotronEndElement = document.querySelector("#jumbotronEnd");
     let endingHeadline = document.createElement("h3");
-    endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
+    endingHeadline.textContent = capitalizeFirstLetter(name1) + " and " + capitalizeFirstLetter(name2) + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
     jumbotronEndElement.appendChild(endingHeadline);
 
 
