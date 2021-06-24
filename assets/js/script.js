@@ -48,7 +48,12 @@ let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCa
 const jumbotronEndElement = document.querySelector('#jumbotronEnd');
 
 let triggerModalElement = document.querySelector("#calculateButton")
-// *** GLOBAL VARIABLES END *** //
+let modal = UIkit.modal("#modal-close-outside");
+let tryAgainButtonElement = document.createElement("button");
+            // *** GLOBAL VARIABLES END *** //
+
+
+
 
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
@@ -81,8 +86,9 @@ let modalFormSubmitHandler = function (event) {
         calculateCompatibility(userName, partnerName);
         firstNameInputElement.value = "";
         secondNameInputElement.value = "";
-
+        modal.hide();
     } else {
+        modal.show();
         alert("error")
         // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
     }
@@ -229,18 +235,22 @@ async function getMovieTitles(genreId) {
     }
 }
 
-function changeDisplay(name1, name2, percentage, genre) {
-    let jumbotronStartElement = document.querySelector("#jumbotronStart");
-    jumbotronStartElement.style.display = "none";
-    triggerModalElement.textContent = "Try Again?";
-    triggerModalElement.style.margin = "1rem";
-    let jumbotronEndElement = document.querySelector("#jumbotronEnd");
-    let endingHeadline = document.createElement("h3");
-    endingHeadline.textContent = capitalizeFirstLetter(name1) + " and " + capitalizeFirstLetter(name2) + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
-    jumbotronEndElement.appendChild(endingHeadline);
-
-
-}
-
-
-
+    async function changeDisplay(name1, name2, percentage, genre) {
+      let jumbotronStartElement = document.querySelector("#jumbotronStart");
+      jumbotronStartElement.style.display = "none";
+      triggerModalElement.style.display = "none";
+      let jumbotronEndElement = document.querySelector("#jumbotronEnd");
+      let endingHeadline = document.createElement("h3");
+      endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
+      jumbotronEndElement.appendChild(endingHeadline);
+      tryAgainButtonElement.setAttribute("type", "button");
+      tryAgainButtonElement.setAttribute("id", "tryAgainButton");
+      tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
+      tryAgainButtonElement.textContent = "Try Again?";
+      let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
+      calculateButtonContainerElement.appendChild(tryAgainButtonElement);
+    }
+    
+    tryAgainButtonElement.addEventListener("click", function(){
+        location.reload();
+    })
