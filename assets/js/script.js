@@ -52,7 +52,12 @@ let triggerModalElement = document.querySelector("#calculateButton")
 let savedItemsArr = [];
 let savedItemCounter = 0;
 let historyEl = document.querySelector("#history");
+let modal = UIkit.modal("#modal-close-outside");
+let tryAgainButtonElement = document.createElement("button");
             // *** GLOBAL VARIABLES END *** //
+
+
+
 
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
@@ -61,19 +66,21 @@ function randomNum(min, max) {
 
 // love calc modal form submission handler
 let modalFormSubmitHandler = function (event) {
-  event.preventDefault();
-  // retrieve names from user inputs
-  let userName = $("#nameInput1").val();
-  let partnerName = $("#nameInput2").val();
-  if (userName && partnerName) {
-    //console.log(userName, partnerName);
-    calculateCompatibility(userName, partnerName);
-    firstNameInputElement.value = "";
-    secondNameInputElement.value = "";
-  } else {
-    alert("error");
-    // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
-  }
+    event.preventDefault();
+    // retrieve names from user inputs
+    let userName = $("#nameInput1").val();
+    let partnerName = $("#nameInput2").val();
+    if(userName && partnerName) {
+        console.log(userName, partnerName);
+        calculateCompatibility(userName, partnerName);
+        firstNameInputElement.value = "";
+        secondNameInputElement.value = "";
+        modal.hide();
+    } else {
+        modal.show();
+        alert("error")
+       // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
+    }
 };
 $("#loveCalcButton").click(modalFormSubmitHandler);
 
@@ -198,7 +205,12 @@ async function getMovieTitles(genreId) {
                 // create img element
                 let imgEL = document.createElement('img');
                 imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
+
+                //titles as alt text for movie posters
+                imgEL.alt = movieTitle
+
                 imgEL.setAttribute('class', "movieList");
+
                 // will change where the posters are being appended to once the containers are set up
                  // append textEl to movieTitleEL
         // movieTitleEl.appendChild(headerEl);
@@ -246,11 +258,10 @@ async function getMovieTitles(genreId) {
       }
     
 
-    function changeDisplay(name1, name2, percentage, genre) {
+    async function changeDisplay(name1, name2, percentage, genre) {
       let jumbotronStartElement = document.querySelector("#jumbotronStart");
       jumbotronStartElement.style.display = "none";
-      triggerModalElement.textContent = "Try Again?";
-      triggerModalElement.style.margin = "1rem";
+      triggerModalElement.style.display = "none";
       let jumbotronEndElement = document.querySelector("#jumbotronEnd");
       let endingHeadline = document.createElement("h3");
       endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
@@ -320,7 +331,20 @@ for (var i = 0; i < saveNames.length; i++) {
   displaySavedItems(saveNames[i]);
 }
 }
-//event listener for local storage
+
+      tryAgainButtonElement.setAttribute("type", "button");
+      tryAgainButtonElement.setAttribute("id", "tryAgainButton");
+      tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
+      tryAgainButtonElement.textContent = "Try Again?";
+      let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
+      calculateButtonContainerElement.appendChild(tryAgainButtonElement);
+    }
+    
+    tryAgainButtonElement.addEventListener("click", function(){
+        location.reload();
+    })
+    
+    //event listener for local storage
 triggerModalElement.addEventListener("click", displaySavedItems);
 
 loadSaveItems();
