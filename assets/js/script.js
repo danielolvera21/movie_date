@@ -241,7 +241,7 @@ async function getMovieTitles(genreId) {
       triggerModalElement.style.display = "none";
       let jumbotronEndElement = document.querySelector("#jumbotronEnd");
       let endingHeadline = document.createElement("h3");
-      endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
+      endingHeadline.textContent = capitalizeFirstLetter(name1) + " and " + capitalizeFirstLetter(name2) + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
       jumbotronEndElement.appendChild(endingHeadline);
       tryAgainButtonElement.setAttribute("type", "button");
       tryAgainButtonElement.setAttribute("id", "tryAgainButton");
