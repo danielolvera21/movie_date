@@ -154,6 +154,10 @@ async function getMovieTitles(genreId) {
                 const movieId = data.results[randomResult].id;
                 // pull movie title from data object
                 const movieTitle = data.results[randomResult].title;
+                // check if movietitle is already included in array
+                if (movieTitlesArray.includes(movieTitle)) {
+                    i--;
+                }
                 // push movie title to movieTitlesArray
                 movieTitlesArray.push(movieTitle)
                 // pull watch provider data
