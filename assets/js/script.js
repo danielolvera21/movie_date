@@ -266,6 +266,13 @@ async function getMovieTitles(genreId) {
       let endingHeadline = document.createElement("h3");
       endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
       jumbotronEndElement.appendChild(endingHeadline);
+      tryAgainButtonElement.setAttribute("type", "button");
+      tryAgainButtonElement.setAttribute("id", "tryAgainButton");
+      tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
+      tryAgainButtonElement.textContent = "Try Again?";
+      let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
+      calculateButtonContainerElement.appendChild(tryAgainButtonElement);
+    
 
       //object to add to localstorage
       let savedItemsObj = {
@@ -320,7 +327,8 @@ const saveNames = function () {
 const loadSaveItems = function () {
   let saveNames = localStorage.getItem("couples");
 
-if (saveNames === null) {
+if (!saveNames) {
+  saveNames = [];
   return false;
 }
 //parse into array of objects
@@ -332,13 +340,7 @@ for (var i = 0; i < saveNames.length; i++) {
 }
 }
 
-      tryAgainButtonElement.setAttribute("type", "button");
-      tryAgainButtonElement.setAttribute("id", "tryAgainButton");
-      tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
-      tryAgainButtonElement.textContent = "Try Again?";
-      let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
-      calculateButtonContainerElement.appendChild(tryAgainButtonElement);
-    }
+    
     
     tryAgainButtonElement.addEventListener("click", function(){
         location.reload();
