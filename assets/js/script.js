@@ -64,6 +64,8 @@ let modalFormSubmitHandler = function (event) {
     let partnerName = $("#nameInput2").val();
     if (userName && partnerName) {
         console.log(userName, partnerName);
+        // hide the modal
+        UIkit.modal(modalElement).hide();
         //remove existing h3 if exists
         jumbotronEndElement.innerHTML = '';
         // remove existing image elements from carousell
