@@ -47,6 +47,11 @@ let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
 
 let triggerModalElement = document.querySelector("#calculateButton")
+
+//local storage variables
+let savedItemsArr = [];
+let savedItemCounter = 0;
+let historyEl = document.querySelector("#history");
             // *** GLOBAL VARIABLES END *** //
 
 // generate a random number between min and (max - min)
@@ -61,8 +66,7 @@ let modalFormSubmitHandler = function (event) {
   let userName = $("#nameInput1").val();
   let partnerName = $("#nameInput2").val();
   if (userName && partnerName) {
-    saveNames();
-    console.log(userName, partnerName);
+    //console.log(userName, partnerName);
     calculateCompatibility(userName, partnerName);
     firstNameInputElement.value = "";
     secondNameInputElement.value = "";
@@ -92,7 +96,7 @@ function calculateCompatibility(name1, name2) {
             .then(function (data) {
 
 
-                console.log('love calculator: ', data, data.percentage)
+                //console.log('love calculator: ', data, data.percentage)
                 // check percentage amount to determine which genre to use in getMovieTitles
                 if (data.percentage >= 0 && data.percentage < 26) {
                     let genreId = 27;
@@ -116,8 +120,8 @@ function calculateCompatibility(name1, name2) {
                     changeDisplay(data.fname, data.sname, data.percentage, genreName);
                 }
 
-                console.log('love calculator: ', data)
-                console.log(genreId);
+                //console.log('love calculator: ', data)
+                //console.log(genreId);
                 
             })
     })
@@ -142,7 +146,7 @@ async function getMovieTitles(genreId) {
 
         if (response.ok) {
             const data = await response.json();
-            console.log('movie title: ', data);
+            //console.log('movie title: ', data);
             // if has an image url, push the movie title to the movieTitlesArray
             if (data.results[randomResult].poster_path) {
                 // pull movie ID from data object
@@ -156,7 +160,7 @@ async function getMovieTitles(genreId) {
 
                 if (streamingResponse.ok) {
                     const streamingData = await streamingResponse.json();
-                    console.log(streamingData)
+                    //console.log(streamingData)
                     if (!streamingData.results.US) {
                         const watchProvider = 'Not Available to stream or rent on digital platforms';
                         watchProviderArray.push(watchProvider);
@@ -181,9 +185,9 @@ async function getMovieTitles(genreId) {
                     return result
                 }, {});
 
-                console.log(movieTitlesArray)
-                console.log(watchProviderArray)
-                console.log(movieObject);
+                // console.log(movieTitlesArray)
+                // console.log(watchProviderArray)
+                // console.log(movieObject);
 
                 // pull img file path for the poster
                 const tmdbImgPath = data.results[randomResult].poster_path;
@@ -219,9 +223,9 @@ async function getMovieTitles(genreId) {
         },
         {});
 
-        console.log(movieTitlesArray);
-        console.log(watchProviderArray);
-        console.log(movieObject);
+        // console.log(movieTitlesArray);
+        // console.log(watchProviderArray);
+        // console.log(movieObject);
 
         // pull img file path for the poster
         const tmdbImgPath = data.results[randomResult].poster_path;
@@ -251,16 +255,72 @@ async function getMovieTitles(genreId) {
       let endingHeadline = document.createElement("h3");
       endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
       jumbotronEndElement.appendChild(endingHeadline);
+
+      //object to add to localstorage
+      let savedItemsObj = {
+        firstName: name1,
+        secondName: name2,
+        compatPercent: percentage
+      }
+      // savedItemsObj.id = savedItemCounter;
+      // savedItemsArr.push(savedItemsObj);
       
+      //saveNames();
+
+     // savedItemCounter++;
+     displaySavedItems(savedItemsObj);
 
     }
     
+//function to display history
+const displaySavedItems = function(savedItemsObj) {
+  let saveItemEl = document.createElement("li")
+  saveItemEl.className = "jumbotron";
 
+  //add ID as custom attribute
+  saveItemEl.setAttribute("data-couple-id", savedItemCounter);
+
+  //create div to hold info
+  let savedInfo = document.createElement("div");
+  savedInfo.className = "history";
+  //add html content to div
+  savedInfo.innerHTML = "<h4 class='first-name'>" + savedItemsObj.firstName + "+" + savedItemsObj.secondName + "= " + savedItemsObj.compatPercent + "% compatibility</h4>";  
+
+  saveItemEl.appendChild(savedInfo);
+
+  historyEl.appendChild(saveItemEl);
+
+  savedItemsObj.id = savedItemCounter;
+  savedItemsArr.push(savedItemsObj);
+
+  saveNames();
+
+  
+  savedItemCounter++;
+
+}
 
 //save names to local storage
 const saveNames = function () {
-  let nameOne = firstNameInputElement.value;
-  let nameTwo = secondNameInputElement.value;
-  localStorage.setItem("yourName", nameOne);
-  localStorage.setItem("partnerName", nameTwo);
+  localStorage.setItem("couples", JSON.stringify(savedItemsArr));
 };
+
+// display names from local storage
+const loadSaveItems = function () {
+  let saveNames = localStorage.getItem("couples");
+
+if (saveNames === null) {
+  return false;
+}
+//parse into array of objects
+saveNames = JSON.parse(saveNames);
+
+//loop through array
+for (var i = 0; i < saveNames.length; i++) {
+  displaySavedItems(saveNames[i]);
+}
+}
+//event listener for local storage
+triggerModalElement.addEventListener("click", displaySavedItems);
+
+loadSaveItems();
