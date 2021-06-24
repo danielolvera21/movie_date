@@ -48,7 +48,7 @@ let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCa
 const jumbotronEndElement = document.querySelector('#jumbotronEnd');
 
 let triggerModalElement = document.querySelector("#calculateButton")
-            // *** GLOBAL VARIABLES END *** //
+// *** GLOBAL VARIABLES END *** //
 
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
@@ -62,14 +62,23 @@ let modalFormSubmitHandler = function (event) {
     // retrieve names from user inputs
     let userName = $("#nameInput1").val();
     let partnerName = $("#nameInput2").val();
-    if(userName && partnerName) {
+    if (userName && partnerName) {
         console.log(userName, partnerName);
+        //remove existing h3 if exists
+        jumbotronEndElement.innerHTML = '';
+        // remove existing image elements from carousell
+        var imgElements = document.querySelectorAll("img"); // HTMLCollection
+        for (var i = 0; i < imgElements.length; i++) {
+            var img = imgElements[i];
+            img.parentNode.removeChild(img);
+        }
         calculateCompatibility(userName, partnerName);
         firstNameInputElement.value = "";
         secondNameInputElement.value = "";
+
     } else {
         alert("error")
-       // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
+        // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
     }
 };
 $("#loveCalcButton").click(modalFormSubmitHandler);
@@ -79,61 +88,56 @@ $("#loveCalcButton").click(modalFormSubmitHandler);
 
 // love calc fetch
 function calculateCompatibility(name1, name2) {
-fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&sname=" + name2, {
-    "method": "GET",
-    "headers": {
-        "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
-        "x-rapidapi-host": "love-calculator.p.rapidapi.com"
-    }
-})
-    .then(response => {
-        response.json()
-            .then(function (data) {
-
-
-                console.log('love calculator: ', data, data.percentage)
-                // check percentage amount to determine which genre to use in getMovieTitles
-                if (data.percentage >= 0 && data.percentage < 26) {
-                    let genreId = 27;
-                    let genreName = "Horror";
-                    jumbotronEndElement.innerHTML= '';
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else if (data.percentage >=26 && data.percentage < 51) {
-                    let genreId = 18;
-                    let genreName = "Drama";
-                    const h3El = jumbotronEndElement.lastElementChild;
-                    jumbotronEndElement.innerHTML= '';
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else if (data.percentage >=51 && data.percentage < 76) {
-                    let genreId = 53;
-                    let genreName = "Action"
-                    jumbotronEndElement.innerHTML= '';
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else {
-                    let genreId = 10749;
-                    let genreName = "Romance";
-                    jumbotronEndElement.innerHTML= '';
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                }
-
-                console.log('love calculator: ', data)
-                console.log(genreId);
-                
-            })
+    fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&sname=" + name2, {
+        "method": "GET",
+        "headers": {
+            "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
+            "x-rapidapi-host": "love-calculator.p.rapidapi.com"
+        }
     })
-    .catch(err => {
-        console.error(err);
-    })
+        .then(response => {
+            response.json()
+                .then(function (data) {
+
+
+                    console.log('love calculator: ', data, data.percentage)
+                    // check percentage amount to determine which genre to use in getMovieTitles
+                    if (data.percentage >= 0 && data.percentage < 26) {
+                        let genreId = 27;
+                        let genreName = "Horror";
+                        getMovieTitles(genreId);
+                        changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    } else if (data.percentage >= 26 && data.percentage < 51) {
+                        let genreId = 18;
+                        let genreName = "Drama";
+                        getMovieTitles(genreId);
+                        changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    } else if (data.percentage >= 51 && data.percentage < 76) {
+                        let genreId = 53;
+                        let genreName = "Action"
+                        getMovieTitles(genreId);
+                        changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    } else {
+                        let genreId = 10749;
+                        let genreName = "Romance";
+                        getMovieTitles(genreId);
+                        changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    }
+
+                    console.log('love calculator: ', data)
+                    console.log(genreId);
+
+                })
+        })
+        .catch(err => {
+            console.error(err);
+        })
 };
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
 async function getMovieTitles(genreId) {
-    for(var i = 0; i < 7; i++) {
+    for (var i = 0; i < 7; i++) {
         // to generate a random page number from 1 - 500
         let randomPage = randomNum(1, 6);
         // to generate a random result index from 0 - 19
@@ -202,31 +206,31 @@ async function getMovieTitles(genreId) {
                 imgEL.setAttribute('class', "movieList");
 
                 // will change where the posters are being appended to once the containers are set up
-                 // append textEl to movieTitleEL
-        // movieTitleEl.appendChild(headerEl);
-        // append movie title to body of DOM
-        // document.querySelector('#movie' + i).appendChild(movieTitleEl);
-        // append image to body of DOM
-        document.querySelector('#movie' + i).appendChild(imgEL);
+                // append textEl to movieTitleEL
+                // movieTitleEl.appendChild(headerEl);
+                // append movie title to body of DOM
+                // document.querySelector('#movie' + i).appendChild(movieTitleEl);
+                // append image to body of DOM
+                document.querySelector('#movie' + i).appendChild(imgEL);
 
-                }
-               
             }
+
         }
     }
+}
 
-    function changeDisplay(name1, name2, percentage, genre) {
-      let jumbotronStartElement = document.querySelector("#jumbotronStart");
-      jumbotronStartElement.style.display = "none";
-      triggerModalElement.textContent = "Try Again?";
-      triggerModalElement.style.margin = "1rem";
-      let jumbotronEndElement = document.querySelector("#jumbotronEnd");
-      let endingHeadline = document.createElement("h3");
-      endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
-      jumbotronEndElement.appendChild(endingHeadline);
-      
+function changeDisplay(name1, name2, percentage, genre) {
+    let jumbotronStartElement = document.querySelector("#jumbotronStart");
+    jumbotronStartElement.style.display = "none";
+    triggerModalElement.textContent = "Try Again?";
+    triggerModalElement.style.margin = "1rem";
+    let jumbotronEndElement = document.querySelector("#jumbotronEnd");
+    let endingHeadline = document.createElement("h3");
+    endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
+    jumbotronEndElement.appendChild(endingHeadline);
 
-    }
-    
+
+}
+
 
 
