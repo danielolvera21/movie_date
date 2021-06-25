@@ -53,9 +53,9 @@ const tmdbImgSrcUrl = "https://image.tmdb.org/t/p/w500"; // we can adjust the 'w
 let modalElement = document.querySelector("#modal-close-outside");
 let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
-let loveCalcButtonElement = document.querySelector(
-  "#modal-close-outside #loveCalcButton"
-);
+let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
+const jumbotronEndElement = document.querySelector('#jumbotronEnd');
+
 
 let triggerModalElement = document.querySelector("#calculateButton");
 let modal = UIkit.modal("#modal-close-outside");
@@ -67,22 +67,38 @@ function randomNum(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+// to capitalize first letter
+function capitalizeFirstLetter(string) {
+    return string.charAt(0).toUpperCase() + string.slice(1);
+  }
+
 // love calc modal form submission handler
 let modalFormSubmitHandler = function (event) {
-  event.preventDefault();
-  // retrieve names from user inputs
-  let userName = $("#nameInput1").val();
-  let partnerName = $("#nameInput2").val();
-  if (userName && partnerName) {
-    calculateCompatibility(userName, partnerName);
-    firstNameInputElement.value = "";
-    secondNameInputElement.value = "";
-    modal.hide();
-  } else {
-    modal.show();
-    alert("error");
-    // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
-  }
+    event.preventDefault();
+    // retrieve names from user inputs
+    let userName = $("#nameInput1").val();
+    let partnerName = $("#nameInput2").val();
+    if (userName && partnerName) {
+        console.log(userName, partnerName);
+        // hide the modal
+        UIkit.modal(modalElement).hide();
+        //remove existing h3 if exists
+        jumbotronEndElement.innerHTML = '';
+        // remove existing image elements from carousell
+        var imgElements = document.querySelectorAll("img"); // HTMLCollection
+        for (var i = 0; i < imgElements.length; i++) {
+            var img = imgElements[i];
+            img.parentNode.removeChild(img);
+        }
+        calculateCompatibility(userName, partnerName);
+        firstNameInputElement.value = "";
+        secondNameInputElement.value = "";
+        modal.hide();
+    } else {
+        modal.show();
+        alert("error")
+        // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
+    }
 };
 $("#loveCalcButton").click(modalFormSubmitHandler);
 
@@ -216,6 +232,7 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
               "Rent: " + streamingData.results.US.rent[0].provider_name;
             watchProviderArray.push(watchProvider);
           }
+
         }
 
         // create movieObject from 2 arrays
