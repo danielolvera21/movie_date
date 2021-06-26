@@ -54,7 +54,7 @@ let savedItemCounter = 0;
 let historyEl = document.querySelector("#history");
 let modal = UIkit.modal("#modal-close-outside");
 let tryAgainButtonElement = document.createElement("button");
-            // *** GLOBAL VARIABLES END *** //
+// *** GLOBAL VARIABLES END *** //
 
 
 
@@ -66,21 +66,21 @@ function randomNum(min, max) {
 
 // love calc modal form submission handler
 let modalFormSubmitHandler = function (event) {
-    event.preventDefault();
-    // retrieve names from user inputs
-    let userName = $("#nameInput1").val();
-    let partnerName = $("#nameInput2").val();
-    if(userName && partnerName) {
-        console.log(userName, partnerName);
-        calculateCompatibility(userName, partnerName);
-        firstNameInputElement.value = "";
-        secondNameInputElement.value = "";
-        modal.hide();
-    } else {
-        modal.show();
-        alert("error")
-       // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
-    }
+  event.preventDefault();
+  // retrieve names from user inputs
+  let userName = $("#nameInput1").val();
+  let partnerName = $("#nameInput2").val();
+  if (userName && partnerName) {
+    console.log(userName, partnerName);
+    calculateCompatibility(userName, partnerName);
+    firstNameInputElement.value = "";
+    secondNameInputElement.value = "";
+    modal.hide();
+  } else {
+    modal.show();
+    alert("error")
+    // NON-MVP GOAL: send to a function that turns the input box borders red and shakes them, then prompts user to try again
+  }
 };
 $("#loveCalcButton").click(modalFormSubmitHandler);
 
@@ -88,9 +88,9 @@ $("#loveCalcButton").click(modalFormSubmitHandler);
 function calculateCompatibility(name1, name2) {
   fetch(
     "https://love-calculator.p.rapidapi.com/getPercentage?fname=" +
-      name1 +
-      "&sname=" +
-      name2,
+    name1 +
+    "&sname=" +
+    name2,
     {
       method: "GET",
       headers: {
@@ -99,41 +99,37 @@ function calculateCompatibility(name1, name2) {
       }
     })
     .then(response => {
-        response.json()
-            .then(function (data) {
+      response.json()
+        .then(function (data) {
 
 
-                //console.log('love calculator: ', data, data.percentage)
-                // check percentage amount to determine which genre to use in getMovieTitles
-                if (data.percentage >= 0 && data.percentage < 26) {
-                    let genreId = 27;
-                    let genreName = "Horror";
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else if (data.percentage >=26 && data.percentage < 51) {
-                    let genreId = 18;
-                    let genreName = "Drama";
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else if (data.percentage >=51 && data.percentage < 76) {
-                    let genreId = 53;
-                    let genreName = "Action"
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                } else {
-                    let genreId = 10749;
-                    let genreName = "Romance";
-                    getMovieTitles(genreId);
-                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
-                }
+          // check percentage amount to determine which genre to use in getMovieTitles
+          if (data.percentage >= 0 && data.percentage < 26) {
+            let genreId = 27;
+            let genreName = "Horror";
+            getMovieTitles(genreId);
+            changeDisplay(data.fname, data.sname, data.percentage, genreName);
+          } else if (data.percentage >= 26 && data.percentage < 51) {
+            let genreId = 18;
+            let genreName = "Drama";
+            getMovieTitles(genreId);
+            changeDisplay(data.fname, data.sname, data.percentage, genreName);
+          } else if (data.percentage >= 51 && data.percentage < 76) {
+            let genreId = 53;
+            let genreName = "Action"
+            getMovieTitles(genreId);
+            changeDisplay(data.fname, data.sname, data.percentage, genreName);
+          } else {
+            let genreId = 10749;
+            let genreName = "Romance";
+            getMovieTitles(genreId);
+            changeDisplay(data.fname, data.sname, data.percentage, genreName);
+          }
 
-                //console.log('love calculator: ', data)
-                //console.log(genreId);
-                
-            })
+        })
     })
     .catch(err => {
-        console.error(err);
+      console.error(err);
     })
     .catch((err) => {
       console.error(err);
@@ -143,155 +139,141 @@ function calculateCompatibility(name1, name2) {
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
 async function getMovieTitles(genreId) {
-    for(var i = 0; i < 7; i++) {
-        // to generate a random page number from 1 - 500
-        let randomPage = randomNum(1, 6);
-        // to generate a random result index from 0 - 19
-        let randomResult = randomNum(0, 20);
-        // await call makes the fetch call synchronous 
-        const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=" + genreId + "&with_original_language=en&include_adult=true&page=" + randomPage);
+  for (var i = 0; i < 7; i++) {
+    // to generate a random page number from 1 - 500
+    let randomPage = randomNum(1, 6);
+    // to generate a random result index from 0 - 19
+    let randomResult = randomNum(0, 20);
+    // await call makes the fetch call synchronous 
+    const response = await fetch("https://api.themoviedb.org/3/discover/movie?api_key=" + tmdbAPIKey + "&language=en-US&sort_by=popularity.desc&with_genres=" + genreId + "&with_original_language=en&include_adult=true&page=" + randomPage);
 
-        if (response.ok) {
-            const data = await response.json();
-            //console.log('movie title: ', data);
-            // if has an image url, push the movie title to the movieTitlesArray
-            if (data.results[randomResult].poster_path) {
-                // pull movie ID from data object
-                const movieId = data.results[randomResult].id;
-                // pull movie title from data object
-                const movieTitle = data.results[randomResult].title;
-                // push movie title to movieTitlesArray
-                movieTitlesArray.push(movieTitle)
-                // pull watch provider data
-                const streamingResponse = await fetch("https://api.themoviedb.org/3/movie/" + movieId + "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171")
+    if (response.ok) {
+      const data = await response.json();
+      // if has an image url, push the movie title to the movieTitlesArray
+      if (data.results[randomResult].poster_path) {
+        // pull movie ID from data object
+        const movieId = data.results[randomResult].id;
+        // pull movie title from data object
+        const movieTitle = data.results[randomResult].title;
+        // push movie title to movieTitlesArray
+        movieTitlesArray.push(movieTitle)
+        // pull watch provider data
+        const streamingResponse = await fetch("https://api.themoviedb.org/3/movie/" + movieId + "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171")
 
-                if (streamingResponse.ok) {
-                    const streamingData = await streamingResponse.json();
-                    //console.log(streamingData)
-                    if (!streamingData.results.US) {
-                        const watchProvider = 'Not Available to stream or rent on digital platforms';
-                        watchProviderArray.push(watchProvider);
-                    }
-                    else if (!streamingData.results.US.flatrate && !streamingData.results.US.rent) {
-                        const watchProvider = 'Not Available to stream or rent on digital platforms';
-                        watchProviderArray.push(watchProvider);
-                    }
-                    else if (streamingData.results.US.flatrate) {
-                        const watchProvider = 'Stream: ' + streamingData.results.US.flatrate[0].provider_name;
-                        watchProviderArray.push(watchProvider);
-                    }
-                    else {
-                        const watchProvider = 'Rent: ' + streamingData.results.US.rent[0].provider_name;
-                        watchProviderArray.push(watchProvider);
-                    }
-                }
+        if (streamingResponse.ok) {
+          const streamingData = await streamingResponse.json();
+          if (!streamingData.results.US) {
+            const watchProvider = 'Not Available to stream or rent on digital platforms';
+            watchProviderArray.push(watchProvider);
+          }
+          else if (!streamingData.results.US.flatrate && !streamingData.results.US.rent) {
+            const watchProvider = 'Not Available to stream or rent on digital platforms';
+            watchProviderArray.push(watchProvider);
+          }
+          else if (streamingData.results.US.flatrate) {
+            const watchProvider = 'Stream: ' + streamingData.results.US.flatrate[0].provider_name;
+            watchProviderArray.push(watchProvider);
+          }
+          else {
+            const watchProvider = 'Rent: ' + streamingData.results.US.rent[0].provider_name;
+            watchProviderArray.push(watchProvider);
+          }
+        }
 
-                // create movieObject from 2 arrays
-                movieObject = watchProviderArray.reduce(function (result, field, index) {
-                    result[movieTitlesArray[index]] = field;
-                    return result
-                }, {});
+        // create movieObject from 2 arrays
+        movieObject = watchProviderArray.reduce(function (result, field, index) {
+          result[movieTitlesArray[index]] = field;
+          return result
+        }, {});
 
-                // console.log(movieTitlesArray)
-                // console.log(watchProviderArray)
-                // console.log(movieObject);
+        // pull img file path for the poster
+        const tmdbImgPath = data.results[randomResult].poster_path;
+        // create header for movie title
+        let movieTitleEl = document.createElement('H1')
+        // create text of h1 header
+        let headerEl = document.createTextNode(movieTitle);
+        // create img element
+        let imgEL = document.createElement('img');
+        imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
 
-                // pull img file path for the poster
-                const tmdbImgPath = data.results[randomResult].poster_path;
-                // create header for movie title
-                let movieTitleEl = document.createElement('H1')
-                // create text of h1 header
-                let headerEl = document.createTextNode(movieTitle);
-                // create img element
-                let imgEL = document.createElement('img');
-                imgEL.setAttribute('src', tmdbImgSrcUrl + tmdbImgPath);
+        //titles as alt text for movie posters
+        imgEL.alt = movieTitle
 
-                //titles as alt text for movie posters
-                imgEL.alt = movieTitle
+        imgEL.setAttribute('class', "movieList");
 
-                imgEL.setAttribute('class', "movieList");
-
-                // will change where the posters are being appended to once the containers are set up
-                 // append textEl to movieTitleEL
+        // will change where the posters are being appended to once the containers are set up
+        // append textEl to movieTitleEL
         // movieTitleEl.appendChild(headerEl);
         // append movie title to body of DOM
         // document.querySelector('#movie' + i).appendChild(movieTitleEl);
         // append image to body of DOM
         document.querySelector('#movie' + i).appendChild(imgEL);
 
-                }
-               
-            }
-        }
-
-        // create movieObject from 2 arrays
-        movieObject = watchProviderArray.reduce(function (
-          result,
-          field,
-          index
-        ) {
-          result[movieTitlesArray[index]] = field;
-          return result;
-        },
-        {});
-
-        // console.log(movieTitlesArray);
-        // console.log(watchProviderArray);
-        // console.log(movieObject);
-
-        // pull img file path for the poster
-        const tmdbImgPath = data.results[randomResult].poster_path;
-        // create header for movie title
-        let movieTitleEl = document.createElement("H1");
-        // create text of h1 header
-        let headerEl = document.createTextNode(movieTitle);
-        // create img element
-        let imgEL = document.createElement("img");
-        imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
-        // will change where the posters are being appended to once the containers are set up
-        // append textEl to movieTitleEL
-        movieTitleEl.appendChild(headerEl);
-        // append movie title to body of DOM
-        document.querySelector("body").appendChild(movieTitleEl);
-        // append image to body of DOM
-        document.querySelector("body").appendChild(imgEL);
       }
-    
-
-    async function changeDisplay(name1, name2, percentage, genre) {
-      let jumbotronStartElement = document.querySelector("#jumbotronStart");
-      jumbotronStartElement.style.display = "none";
-      triggerModalElement.style.display = "none";
-      let jumbotronEndElement = document.querySelector("#jumbotronEnd");
-      let endingHeadline = document.createElement("h3");
-      endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
-      jumbotronEndElement.appendChild(endingHeadline);
-      tryAgainButtonElement.setAttribute("type", "button");
-      tryAgainButtonElement.setAttribute("id", "tryAgainButton");
-      tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
-      tryAgainButtonElement.textContent = "Try Again?";
-      let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
-      calculateButtonContainerElement.appendChild(tryAgainButtonElement);
-    
-
-      //object to add to localstorage
-      let savedItemsObj = {
-        firstName: name1,
-        secondName: name2,
-        compatPercent: percentage
-      }
-      // savedItemsObj.id = savedItemCounter;
-      // savedItemsArr.push(savedItemsObj);
-      
-      //saveNames();
-
-     // savedItemCounter++;
-     displaySavedItems(savedItemsObj);
 
     }
-    
+  }
+
+  // create movieObject from 2 arrays
+  movieObject = watchProviderArray.reduce(function (
+    result,
+    field,
+    index
+  ) {
+    result[movieTitlesArray[index]] = field;
+    return result;
+  },
+    {});
+
+  // pull img file path for the poster
+  const tmdbImgPath = data.results[randomResult].poster_path;
+  // create header for movie title
+  let movieTitleEl = document.createElement("H1");
+  // create text of h1 header
+  let headerEl = document.createTextNode(movieTitle);
+  // create img element
+  let imgEL = document.createElement("img");
+  imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
+  // will change where the posters are being appended to once the containers are set up
+  // append textEl to movieTitleEL
+  movieTitleEl.appendChild(headerEl);
+  // append movie title to body of DOM
+  document.querySelector("body").appendChild(movieTitleEl);
+  // append image to body of DOM
+  document.querySelector("body").appendChild(imgEL);
+}
+
+
+function changeDisplay(name1, name2, percentage, genre) {
+  let jumbotronStartElement = document.querySelector("#jumbotronStart");
+  jumbotronStartElement.style.display = "none";
+  triggerModalElement.style.display = "none";
+  let jumbotronEndElement = document.querySelector("#jumbotronEnd");
+  let endingHeadline = document.createElement("h3");
+  endingHeadline.textContent = name1 + " and " + name2 + ", your compatibility score is " + percentage + "%! For a score like that, we recommend these " + genre + " films:";
+  jumbotronEndElement.appendChild(endingHeadline);
+  tryAgainButtonElement.setAttribute("type", "button");
+  tryAgainButtonElement.setAttribute("id", "tryAgainButton");
+  tryAgainButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered");
+  tryAgainButtonElement.textContent = "Try Again?";
+  let calculateButtonContainerElement = document.querySelector(".calculate-btn-container");
+  calculateButtonContainerElement.appendChild(tryAgainButtonElement);
+
+
+  //object to add to localstorage
+  let savedItemsObj = {
+    firstName: name1,
+    secondName: name2,
+    compatPercent: percentage
+  }
+
+  displaySavedItems(savedItemsObj);
+
+}
+
 //function to display history
-const displaySavedItems = function(savedItemsObj) {
+const displaySavedItems = function (savedItemsObj) {
+
   let saveItemEl = document.createElement("li")
   saveItemEl.className = "jumbotron";
 
@@ -302,7 +284,7 @@ const displaySavedItems = function(savedItemsObj) {
   let savedInfo = document.createElement("div");
   savedInfo.className = "history";
   //add html content to div
-  savedInfo.innerHTML = "<h4 class='first-name'>" + savedItemsObj.firstName + "+" + savedItemsObj.secondName + "= " + savedItemsObj.compatPercent + "% compatibility</h4>";  
+  savedInfo.innerHTML = "<h4 class='first-name'>" + savedItemsObj.firstName + "+" + savedItemsObj.secondName + "= " + savedItemsObj.compatPercent + "% compatibility</h4>";
 
   saveItemEl.appendChild(savedInfo);
 
@@ -310,10 +292,9 @@ const displaySavedItems = function(savedItemsObj) {
 
   savedItemsObj.id = savedItemCounter;
   savedItemsArr.push(savedItemsObj);
-
   saveNames();
 
-  
+
   savedItemCounter++;
 
 }
@@ -327,26 +308,26 @@ const saveNames = function () {
 const loadSaveItems = function () {
   let saveNames = localStorage.getItem("couples");
 
-if (!saveNames) {
-  saveNames = [];
-  return false;
-}
-//parse into array of objects
-saveNames = JSON.parse(saveNames);
+  if (!saveNames) {
+    saveNames = [];
+    return false;
+  }
+  //parse into array of objects
+  saveNames = JSON.parse(saveNames);
 
-//loop through array
-for (var i = 0; i < saveNames.length; i++) {
-  displaySavedItems(saveNames[i]);
-}
+  //loop through array
+  for (var i = 0; i < saveNames.length; i++) {
+    displaySavedItems(saveNames[i]);
+  }
 }
 
-    
-    
-    tryAgainButtonElement.addEventListener("click", function(){
-        location.reload();
-    })
-    
-    //event listener for local storage
-triggerModalElement.addEventListener("click", displaySavedItems);
+
+
+tryAgainButtonElement.addEventListener("click", function () {
+  location.reload();
+})
+
+//event listener for local storage
+triggerModalElement.addEventListener("click", saveNames);
 
 loadSaveItems();
