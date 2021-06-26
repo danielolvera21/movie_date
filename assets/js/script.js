@@ -45,6 +45,7 @@ let modalElement = document.querySelector("#modal-close-outside");
 let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
+const jumbotronEndElement = document.querySelector('#jumbotronEnd');
 
 let triggerModalElement = document.querySelector("#calculateButton")
 
@@ -64,6 +65,11 @@ function randomNum(min, max) {
   return Math.floor(Math.random() * (max - min) + min);
 }
 
+// to capitalize first letter
+function capitalizeFirstLetter(string) {
+  return string.charAt(0).toUpperCase() + string.slice(1);
+}
+
 // love calc modal form submission handler
 let modalFormSubmitHandler = function (event) {
   event.preventDefault();
@@ -72,6 +78,16 @@ let modalFormSubmitHandler = function (event) {
   let partnerName = $("#nameInput2").val();
   if (userName && partnerName) {
     console.log(userName, partnerName);
+    // hide the modal
+    UIkit.modal(modalElement).hide();
+    //remove existing h3 if exists
+    jumbotronEndElement.innerHTML = '';
+    // remove existing image elements from carousell
+    var imgElements = document.querySelectorAll("img"); // HTMLCollection
+    for (var i = 0; i < imgElements.length; i++) {
+      var img = imgElements[i];
+      img.parentNode.removeChild(img);
+    }
     calculateCompatibility(userName, partnerName);
     firstNameInputElement.value = "";
     secondNameInputElement.value = "";
@@ -86,23 +102,19 @@ $("#loveCalcButton").click(modalFormSubmitHandler);
 
 // love calc fetch
 function calculateCompatibility(name1, name2) {
-  fetch(
-    "https://love-calculator.p.rapidapi.com/getPercentage?fname=" +
-    name1 +
-    "&sname=" +
-    name2,
-    {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
-        "x-rapidapi-host": "love-calculator.p.rapidapi.com",
-      }
-    })
+  fetch("https://love-calculator.p.rapidapi.com/getPercentage?fname=" + name1 + "&sname=" + name2, {
+    "method": "GET",
+    "headers": {
+      "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
+      "x-rapidapi-host": "love-calculator.p.rapidapi.com"
+    }
+  })
     .then(response => {
       response.json()
         .then(function (data) {
 
 
+          console.log('love calculator: ', data, data.percentage)
           // check percentage amount to determine which genre to use in getMovieTitles
           if (data.percentage >= 0 && data.percentage < 26) {
             let genreId = 27;
@@ -126,19 +138,19 @@ function calculateCompatibility(name1, name2) {
             changeDisplay(data.fname, data.sname, data.percentage, genreName);
           }
 
+          console.log('love calculator: ', data)
+          console.log(genreId);
+
         })
     })
     .catch(err => {
       console.error(err);
     })
-    .catch((err) => {
-      console.error(err);
-    });
-}
+};
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
-async function getMovieTitles(genreId) {
+function getMovieTitles(genreId) {
   for (var i = 0; i < 7; i++) {
     // to generate a random page number from 1 - 500
     let randomPage = randomNum(1, 6);
@@ -149,12 +161,17 @@ async function getMovieTitles(genreId) {
 
     if (response.ok) {
       const data = await response.json();
+      console.log('movie title: ', data);
       // if has an image url, push the movie title to the movieTitlesArray
       if (data.results[randomResult].poster_path) {
         // pull movie ID from data object
         const movieId = data.results[randomResult].id;
         // pull movie title from data object
         const movieTitle = data.results[randomResult].title;
+        // check if movietitle is already included in array
+        if (movieTitlesArray.includes(movieTitle)) {
+          i--;
+        }
         // push movie title to movieTitlesArray
         movieTitlesArray.push(movieTitle)
         // pull watch provider data
@@ -162,6 +179,7 @@ async function getMovieTitles(genreId) {
 
         if (streamingResponse.ok) {
           const streamingData = await streamingResponse.json();
+          console.log(streamingData)
           if (!streamingData.results.US) {
             const watchProvider = 'Not Available to stream or rent on digital platforms';
             watchProviderArray.push(watchProvider);
@@ -185,6 +203,10 @@ async function getMovieTitles(genreId) {
           result[movieTitlesArray[index]] = field;
           return result
         }, {});
+
+        console.log(movieTitlesArray)
+        console.log(watchProviderArray)
+        console.log(movieObject);
 
         // pull img file path for the poster
         const tmdbImgPath = data.results[randomResult].poster_path;
@@ -213,35 +235,8 @@ async function getMovieTitles(genreId) {
 
     }
   }
-
-  // create movieObject from 2 arrays
-  movieObject = watchProviderArray.reduce(function (
-    result,
-    field,
-    index
-  ) {
-    result[movieTitlesArray[index]] = field;
-    return result;
-  },
-    {});
-
-  // pull img file path for the poster
-  const tmdbImgPath = data.results[randomResult].poster_path;
-  // create header for movie title
-  let movieTitleEl = document.createElement("H1");
-  // create text of h1 header
-  let headerEl = document.createTextNode(movieTitle);
-  // create img element
-  let imgEL = document.createElement("img");
-  imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
-  // will change where the posters are being appended to once the containers are set up
-  // append textEl to movieTitleEL
-  movieTitleEl.appendChild(headerEl);
-  // append movie title to body of DOM
-  document.querySelector("body").appendChild(movieTitleEl);
-  // append image to body of DOM
-  document.querySelector("body").appendChild(imgEL);
 }
+
 
 
 function changeDisplay(name1, name2, percentage, genre) {
@@ -323,11 +318,15 @@ const loadSaveItems = function () {
 
 
 
+
+
+
 tryAgainButtonElement.addEventListener("click", function () {
   location.reload();
 })
 
+
+
 //event listener for local storage
 triggerModalElement.addEventListener("click", saveNames);
-
 loadSaveItems();
