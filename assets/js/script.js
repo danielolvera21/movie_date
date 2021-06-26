@@ -150,7 +150,7 @@ function calculateCompatibility(name1, name2) {
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
-function getMovieTitles(genreId) {
+async function getMovieTitles(genreId) {
   for (var i = 0; i < 7; i++) {
     // to generate a random page number from 1 - 500
     let randomPage = randomNum(1, 6);
