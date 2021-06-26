@@ -77,7 +77,6 @@ let modalFormSubmitHandler = function (event) {
   let userName = $("#nameInput1").val();
   let partnerName = $("#nameInput2").val();
   if (userName && partnerName) {
-    console.log(userName, partnerName);
     // hide the modal
     UIkit.modal(modalElement).hide();
     //remove existing h3 if exists
@@ -114,7 +113,6 @@ function calculateCompatibility(name1, name2) {
         .then(function (data) {
 
 
-          console.log('love calculator: ', data, data.percentage)
           // check percentage amount to determine which genre to use in getMovieTitles
           if (data.percentage >= 0 && data.percentage < 26) {
             let genreId = 27;
@@ -137,10 +135,6 @@ function calculateCompatibility(name1, name2) {
             getMovieTitles(genreId);
             changeDisplay(data.fname, data.sname, data.percentage, genreName);
           }
-
-          console.log('love calculator: ', data)
-          console.log(genreId);
-
         })
     })
     .catch(err => {
@@ -161,7 +155,6 @@ async function getMovieTitles(genreId) {
 
     if (response.ok) {
       const data = await response.json();
-      console.log('movie title: ', data);
       // if has an image url, push the movie title to the movieTitlesArray
       if (data.results[randomResult].poster_path) {
         // pull movie ID from data object
@@ -179,7 +172,6 @@ async function getMovieTitles(genreId) {
 
         if (streamingResponse.ok) {
           const streamingData = await streamingResponse.json();
-          console.log(streamingData)
           if (!streamingData.results.US) {
             const watchProvider = 'Not Available to stream or rent on digital platforms';
             watchProviderArray.push(watchProvider);
@@ -204,8 +196,8 @@ async function getMovieTitles(genreId) {
           return result
         }, {});
 
-        console.log(movieTitlesArray)
-        console.log(watchProviderArray)
+        // console.log(movieTitlesArray)
+        // console.log(watchProviderArray)
         console.log(movieObject);
 
         // pull img file path for the poster
