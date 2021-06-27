@@ -7,8 +7,8 @@
 * Create a history of what names user already searched for and allow user to reload the movie titles when the user clicks on button created in history for those names
 
 ## Technologies Used
-* ![Love Calc API](https://rapidapi.com/ajith/api/love-calculator/)
-* ![The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction)
+* [Love Calc API](https://rapidapi.com/ajith/api/love-calculator/)
+* [The Movie Database API](https://developers.themoviedb.org/3/getting-started/introduction)
 * UIkit for CSS framework
 * Jquery
 * Javascript
