@@ -40,11 +40,11 @@ let movieObject = {};
 
 // CREATE JSON for data storage
 let userOutputJSON = [
-//   { loveCalcResults: [], posters: [] },
-//   { loveCalcResults: [], posters: [] },
-//   { loveCalcResults: [], posters: [] },
-//   { loveCalcResults: [], posters: [] },
-//   { loveCalcResults: [], posters: [] },
+    //   { loveCalcResults: [], posters: [] },
+    //   { loveCalcResults: [], posters: [] },
+    //   { loveCalcResults: [], posters: [] },
+    //   { loveCalcResults: [], posters: [] },
+    //   { loveCalcResults: [], posters: [] },
 ];
 // API key for The Movie Database
 const tmdbAPIKey = "1363fbaac30c0fbba8280edaf170a171";
@@ -55,6 +55,7 @@ let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
 const jumbotronEndElement = document.querySelector('#jumbotronEnd');
+const searchHistoryEl = $('#search-history');
 
 
 let triggerModalElement = document.querySelector("#calculateButton");
@@ -64,13 +65,37 @@ let tryAgainButtonElement = document.createElement("button");
 
 // generate a random number between min and (max - min)
 function randomNum(min, max) {
-  return Math.floor(Math.random() * (max - min) + min);
+    return Math.floor(Math.random() * (max - min) + min);
 }
 
 // to capitalize first letter
 function capitalizeFirstLetter(string) {
     return string.charAt(0).toUpperCase() + string.slice(1);
-  }
+}
+
+// to create search history button
+function searchHistory(name1, name2) {
+    var searchHistoryBtn = $('<button>')
+        .addClass('history-btn')
+        .text(name1 + " & " + name2)
+        .on('click', function () {
+            //remove existing h3 if exists
+            jumbotronEndElement.innerHTML = '';
+            // remove existing image elements from carousell
+            var imgElements = document.querySelectorAll("img"); // HTMLCollection
+            for (var i = 0; i < imgElements.length; i++) {
+                var img = imgElements[i];
+                img.parentNode.removeChild(img);
+            }
+            calculateCompatibility(name1, name2);
+        })
+        .attr({
+            type: 'button'
+        });
+
+    // append btn to webpage
+    searchHistoryEl.append(searchHistoryBtn);
+}
 
 // love calc modal form submission handler
 let modalFormSubmitHandler = function (event) {
@@ -104,226 +129,230 @@ $("#loveCalcButton").click(modalFormSubmitHandler);
 
 // love calc fetch
 function calculateCompatibility(name1, name2) {
-  fetch(
-    "https://love-calculator.p.rapidapi.com/getPercentage?fname=" +
-      name1 +
-      "&sname=" +
-      name2,
-    {
-      method: "GET",
-      headers: {
-        "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
-        "x-rapidapi-host": "love-calculator.p.rapidapi.com",
-      },
-    }
-  )
-    .then((response) => {
-      response.json().then(function (data) {
-        // check percentage amount to determine which genre to use in getMovieTitles
-        if (data.percentage >= 0 && data.percentage < 26) {
-          let genreId = 27;
-          let genreName = "Horror";
-          getMovieTitles(
-            genreId,
-            data.fname,
-            data.sname,
-            data.percentage,
-            genreName
-          );
-          changeDisplay(data.fname, data.sname, data.percentage, genreName);
-        } else if (data.percentage >= 26 && data.percentage < 51) {
-          let genreId = 18;
-          let genreName = "Drama";
-          getMovieTitles(
-            genreId,
-            data.fname,
-            data.sname,
-            data.percentage,
-            genreName
-          );
-          changeDisplay(data.fname, data.sname, data.percentage, genreName);
-        } else if (data.percentage >= 51 && data.percentage < 76) {
-          let genreId = 53;
-          let genreName = "Action";
-          getMovieTitles(
-            genreId,
-            data.fname,
-            data.sname,
-            data.percentage,
-            genreName
-          );
-          changeDisplay(data.fname, data.sname, data.percentage, genreName);
-        } else {
-          let genreId = 10749;
-          let genreName = "Romance";
-          getMovieTitles(
-            genreId,
-            data.fname,
-            data.sname,
-            data.percentage,
-            genreName
-          );
-          changeDisplay(data.fname, data.sname, data.percentage, genreName);
+    fetch(
+        "https://love-calculator.p.rapidapi.com/getPercentage?fname=" +
+        name1 +
+        "&sname=" +
+        name2,
+        {
+            method: "GET",
+            headers: {
+                "x-rapidapi-key": "0b6124141dmsh2d9b8cd35806733p134e12jsn5b6d5b327fcd",
+                "x-rapidapi-host": "love-calculator.p.rapidapi.com",
+            },
         }
-      });
-    })
-    .catch((err) => {
-      console.error(err);
-    });
+    )
+        .then((response) => {
+            response.json().then(function (data) {
+                // check percentage amount to determine which genre to use in getMovieTitles
+                if (data.percentage >= 0 && data.percentage < 26) {
+                    let genreId = 27;
+                    let genreName = "Horror";
+                    getMovieTitles(
+                        genreId,
+                        data.fname,
+                        data.sname,
+                        data.percentage,
+                        genreName
+                    );
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    searchHistory(data.fname, data.sname)
+                } else if (data.percentage >= 26 && data.percentage < 51) {
+                    let genreId = 18;
+                    let genreName = "Drama";
+                    getMovieTitles(
+                        genreId,
+                        data.fname,
+                        data.sname,
+                        data.percentage,
+                        genreName
+                    );
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    searchHistory(data.fname, data.sname)
+                } else if (data.percentage >= 51 && data.percentage < 76) {
+                    let genreId = 53;
+                    let genreName = "Action";
+                    getMovieTitles(
+                        genreId,
+                        data.fname,
+                        data.sname,
+                        data.percentage,
+                        genreName
+                    );
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    searchHistory(data.fname, data.sname)
+                } else {
+                    let genreId = 10749;
+                    let genreName = "Romance";
+                    getMovieTitles(
+                        genreId,
+                        data.fname,
+                        data.sname,
+                        data.percentage,
+                        genreName
+                    );
+                    changeDisplay(data.fname, data.sname, data.percentage, genreName);
+                    searchHistory(data.fname, data.sname)
+                }
+            });
+        })
+        .catch((err) => {
+            console.error(err);
+        });
 }
 
 // push 5 random movie titles from 5 random pages to the movieTitlesArray
 // TO DO: add back genreId parameter to function below
 async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
-    let loveCalcResultsObj = {loveCalcResults: [], posters: []};
+    let loveCalcResultsObj = { loveCalcResults: [], posters: [] };
     loveCalcResultsObj.loveCalcResults.push(name1, name2, percentage, genreName);
-//   userOutputJSON[0].loveCalcResults.push(name1, name2, percentage, genreName);
-  for (var i = 0; i < 7; i++) {
-    // to generate a random page number from 1 - 500
-    let randomPage = randomNum(1, 6);
-    // to generate a random result index from 0 - 19
-    let randomResult = randomNum(0, 20);
-    // await call makes the fetch call synchronous
-    const response = await fetch(
-      "https://api.themoviedb.org/3/discover/movie?api_key=" +
-        tmdbAPIKey +
-        "&language=en-US&sort_by=popularity.desc&with_genres=" +
-        genreId +
-        "&with_original_language=en&include_adult=true&page=" +
-        randomPage
-    );
-
-    if (response.ok) {
-      const data = await response.json();
-      // if has an image url, push the movie title to the movieTitlesArray
-      if (data.results[randomResult].poster_path) {
-        // pull movie ID from data object
-        const movieId = data.results[randomResult].id;
-        // pull movie title from data object
-        const movieTitle = data.results[randomResult].title;
-        // push movie title to movieTitlesArray
-        movieTitlesArray.push(movieTitle);
-        // pull watch provider data
-        const streamingResponse = await fetch(
-          "https://api.themoviedb.org/3/movie/" +
-            movieId +
-            "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171"
+    //   userOutputJSON[0].loveCalcResults.push(name1, name2, percentage, genreName);
+    for (var i = 0; i < 7; i++) {
+        // to generate a random page number from 1 - 500
+        let randomPage = randomNum(1, 6);
+        // to generate a random result index from 0 - 19
+        let randomResult = randomNum(0, 20);
+        // await call makes the fetch call synchronous
+        const response = await fetch(
+            "https://api.themoviedb.org/3/discover/movie?api_key=" +
+            tmdbAPIKey +
+            "&language=en-US&sort_by=popularity.desc&with_genres=" +
+            genreId +
+            "&with_original_language=en&include_adult=true&page=" +
+            randomPage
         );
 
-        if (streamingResponse.ok) {
-          const streamingData = await streamingResponse.json();
-          if (!streamingData.results.US) {
-            const watchProvider =
-              "Not Available to stream or rent on digital platforms";
-            watchProviderArray.push(watchProvider);
-          } else if (
-            !streamingData.results.US.flatrate &&
-            !streamingData.results.US.rent
-          ) {
-            const watchProvider =
-              "Not Available to stream or rent on digital platforms";
-            watchProviderArray.push(watchProvider);
-          } else if (streamingData.results.US.flatrate) {
-            const watchProvider =
-              "Stream: " + streamingData.results.US.flatrate[0].provider_name;
-            watchProviderArray.push(watchProvider);
-          } else {
-            const watchProvider =
-              "Rent: " + streamingData.results.US.rent[0].provider_name;
-            watchProviderArray.push(watchProvider);
-          }
+        if (response.ok) {
+            const data = await response.json();
+            // if has an image url, push the movie title to the movieTitlesArray
+            if (data.results[randomResult].poster_path) {
+                // pull movie ID from data object
+                const movieId = data.results[randomResult].id;
+                // pull movie title from data object
+                const movieTitle = data.results[randomResult].title;
+                // push movie title to movieTitlesArray
+                movieTitlesArray.push(movieTitle);
+                // pull watch provider data
+                const streamingResponse = await fetch(
+                    "https://api.themoviedb.org/3/movie/" +
+                    movieId +
+                    "/watch/providers?api_key=1363fbaac30c0fbba8280edaf170a171"
+                );
 
+                if (streamingResponse.ok) {
+                    const streamingData = await streamingResponse.json();
+                    if (!streamingData.results.US) {
+                        const watchProvider =
+                            "Not Available to stream or rent on digital platforms";
+                        watchProviderArray.push(watchProvider);
+                    } else if (
+                        !streamingData.results.US.flatrate &&
+                        !streamingData.results.US.rent
+                    ) {
+                        const watchProvider =
+                            "Not Available to stream or rent on digital platforms";
+                        watchProviderArray.push(watchProvider);
+                    } else if (streamingData.results.US.flatrate) {
+                        const watchProvider =
+                            "Stream: " + streamingData.results.US.flatrate[0].provider_name;
+                        watchProviderArray.push(watchProvider);
+                    } else {
+                        const watchProvider =
+                            "Rent: " + streamingData.results.US.rent[0].provider_name;
+                        watchProviderArray.push(watchProvider);
+                    }
+
+                }
+
+                // create movieObject from 2 arrays
+                movieObject = watchProviderArray.reduce(function (
+                    result,
+                    field,
+                    index
+                ) {
+                    result[movieTitlesArray[index]] = field;
+                    return result;
+                },
+                    {});
+
+                // console.log(movieTitlesArray)
+                // console.log(watchProviderArray)
+                // console.log(movieObject);
+
+                // pull img file path for the poster
+                const tmdbImgPath = data.results[randomResult].poster_path;
+
+                // create header for movie title
+                let movieTitleEl = document.createElement("H1");
+                // create text of h1 header
+                let headerEl = document.createTextNode(movieTitle);
+                // create img element
+                let imgEL = document.createElement("img");
+                imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
+                let imgURL = imgEL.src;
+                loveCalcResultsObj.posters.push(imgURL);
+                dataPersistence(loveCalcResultsObj);
+                //titles as alt text for movie posters
+                imgEL.alt = movieTitle;
+
+                imgEL.setAttribute("class", "movieList");
+                let movieContainer = document.querySelector("#movie" + i);
+                movieContainer.appendChild(imgEL);
+            }
         }
-
-        // create movieObject from 2 arrays
-        movieObject = watchProviderArray.reduce(function (
-          result,
-          field,
-          index
-        ) {
-          result[movieTitlesArray[index]] = field;
-          return result;
-        },
-        {});
-
-        // console.log(movieTitlesArray)
-        // console.log(watchProviderArray)
-        // console.log(movieObject);
-
-        // pull img file path for the poster
-        const tmdbImgPath = data.results[randomResult].poster_path;
-
-        // create header for movie title
-        let movieTitleEl = document.createElement("H1");
-        // create text of h1 header
-        let headerEl = document.createTextNode(movieTitle);
-        // create img element
-        let imgEL = document.createElement("img");
-        imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
-        let imgURL = imgEL.src;
-        loveCalcResultsObj.posters.push(imgURL);
-        dataPersistence(loveCalcResultsObj);
-        //titles as alt text for movie posters
-        imgEL.alt = movieTitle;
-
-        imgEL.setAttribute("class", "movieList");
-        let movieContainer = document.querySelector("#movie" + i);
-        movieContainer.appendChild(imgEL);
-      }
     }
-  }
 }
 
 async function changeDisplay(name1, name2, percentage, genre) {
-  let jumbotronStartElement = document.querySelector("#jumbotronStart");
-  jumbotronStartElement.style.display = "none";
-  triggerModalElement.style.display = "none";
-  let jumbotronEndElement = document.querySelector("#jumbotronEnd");
-  let endingHeadline = document.createElement("h3");
-  endingHeadline.textContent =
-    name1 +
-    " and " +
-    name2 +
-    ", your compatibility score is " +
-    percentage +
-    "%! For a score like that, we recommend these " +
-    genre +
-    " films:";
-  jumbotronEndElement.appendChild(endingHeadline);
-  tryAgainButtonElement.setAttribute("type", "button");
-  tryAgainButtonElement.setAttribute("id", "tryAgainButton");
-  tryAgainButtonElement.setAttribute(
-    "class",
-    "uk-button uk-button-default uk-button-large button-centered"
-  );
-  tryAgainButtonElement.textContent = "Try Again?";
-  let calculateButtonContainerElement = document.querySelector(
-    ".calculate-btn-container"
-  );
-  calculateButtonContainerElement.appendChild(tryAgainButtonElement);
+    let jumbotronStartElement = document.querySelector("#jumbotronStart");
+    jumbotronStartElement.style.display = "none";
+    triggerModalElement.style.display = "none";
+    let jumbotronEndElement = document.querySelector("#jumbotronEnd");
+    let endingHeadline = document.createElement("h3");
+    endingHeadline.textContent =
+        name1 +
+        " and " +
+        name2 +
+        ", your compatibility score is " +
+        percentage +
+        "%! For a score like that, we recommend these " +
+        genre +
+        " films:";
+    jumbotronEndElement.appendChild(endingHeadline);
+    tryAgainButtonElement.setAttribute("type", "button");
+    tryAgainButtonElement.setAttribute("id", "tryAgainButton");
+    tryAgainButtonElement.setAttribute(
+        "class",
+        "uk-button uk-button-default uk-button-large button-centered"
+    );
+    tryAgainButtonElement.textContent = "Try Again?";
+    let calculateButtonContainerElement = document.querySelector(
+        ".calculate-btn-container"
+    );
+    calculateButtonContainerElement.appendChild(tryAgainButtonElement);
 }
 
 tryAgainButtonElement.addEventListener("click", function () {
-  location.reload();
+    location.reload();
 });
 
 // set up localStorage
 let dataPersistence = function (dataObject) {
-  // send JSON to localStorage
-  if (dataObject.posters.length !== 6) {
-    return;
-  } else {
-      if(JSON.parse(localStorage.getItem("userOutput:"))) {
-        let previousOutputs = JSON.parse(localStorage.getItem("userOutput:"));
-        console.log(previousOutputs);
-        userOutputJSON.unshift(previousOutputs);
-        userOutputJSON.push(dataObject);
-        localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
+    // send JSON to localStorage
+    if (dataObject.posters.length !== 6) {
+        return;
     } else {
-    userOutputJSON.push(dataObject);
-    let stringifyData = JSON.stringify(userOutputJSON);
-    localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
+        if (JSON.parse(localStorage.getItem("userOutput:"))) {
+            let previousOutputs = JSON.parse(localStorage.getItem("userOutput:"));
+            console.log(previousOutputs);
+            userOutputJSON.unshift(previousOutputs);
+            userOutputJSON.push(dataObject);
+            localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
+        } else {
+            userOutputJSON.push(dataObject);
+            let stringifyData = JSON.stringify(userOutputJSON);
+            localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
+        }
     }
-  }
 };
 
