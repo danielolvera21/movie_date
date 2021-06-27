@@ -251,10 +251,6 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
                 // pull img file path for the poster
                 const tmdbImgPath = data.results[randomResult].poster_path;
 
-                // create header for movie title
-                let movieTitleEl = document.createElement("H1");
-                // create text of h1 header
-                let headerEl = document.createTextNode(movieTitle);
                 // create img element
                 let imgEL = document.createElement("img");
                 imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
@@ -280,7 +276,7 @@ async function changeDisplay(name1, name2, percentage, genre) {
     let jumbotronEndElement = document.querySelector("#jumbotronEnd");
     let endingHeadline = document.createElement("h3");
     endingHeadline.textContent =
-    capitalizeFirstLetter(name1) +
+        capitalizeFirstLetter(name1) +
         " and " +
         capitalizeFirstLetter(name2) +
         ", your compatibility score is " +
@@ -353,7 +349,7 @@ let createLocalStorageButtons = function () {
                 movieContainers[i].appendChild(newPosterImage);
             }
             changeDisplay(previousName1, previousName2, previousScore, previousGenre)
-            console.log(previousName1, previousName2, previousScore, previousGenre)
+
         })
     }
 }
