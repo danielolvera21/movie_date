@@ -313,17 +313,13 @@ let dataPersistence = function (dataObject) {
   if (dataObject.posters.length !== 6) {
     return;
   } else {
-      if(JSON.parse(localStorage.getItem("userOutput:"))) {
-        let previousOutputs = JSON.parse(localStorage.getItem("userOutput:"));
-        console.log(previousOutputs);
-        userOutputJSON.unshift(previousOutputs);
-        userOutputJSON.push(dataObject);
-        localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
-    } else {
-    userOutputJSON.push(dataObject);
-    let stringifyData = JSON.stringify(userOutputJSON);
-    localStorage.setItem("userOutput:", JSON.stringify(userOutputJSON));
-    }
+      let checkLocalStorageValue = JSON.parse(localStorage.getItem("userOutput:"));
+      if (checkLocalStorageValue === null) {
+          checkLocalStorageValue = [];
+      }
+        checkLocalStorageValue.push(dataObject);
+        localStorage.setItem("userOutput:", JSON.stringify(checkLocalStorageValue));
+        console.log(localStorage.getItem("userOutput:"));
   }
 };
 
