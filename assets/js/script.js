@@ -196,12 +196,13 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
 
         if (response.ok) {
             const data = await response.json();
+            // pull movie title from data object
+            const movieTitle = data.results[randomResult].title;
             // if has an image url, push the movie title to the movieTitlesArray
-            if (data.results[randomResult].poster_path) {
+            if (data.results[randomResult].poster_path && !movieTitlesArray.includes(movieTitle)) {
                 // pull movie ID from data object
                 const movieId = data.results[randomResult].id;
-                // pull movie title from data object
-                const movieTitle = data.results[randomResult].title;
+
                 // push movie title to movieTitlesArray
                 movieTitlesArray.push(movieTitle);
                 // pull watch provider data
@@ -271,6 +272,7 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
     }
 }
 
+// create h3 display showing comp % and genre 
 async function changeDisplay(name1, name2, percentage, genre) {
     let jumbotronStartElement = document.querySelector("#jumbotronStart");
     jumbotronStartElement.style.display = "none";
@@ -320,6 +322,7 @@ let dataPersistence = function (dataObject) {
     }
 };
 
+// create the button to display previously searched couples
 let createLocalStorageButtons = function () {
     previouslySearchedElement.innerHTML = "";
     let localStorageObject = JSON.parse(localStorage.getItem("userOutput:"));
@@ -354,6 +357,8 @@ let createLocalStorageButtons = function () {
         })
     }
 }
+
+// load buttons
 createLocalStorageButtons();
 
 
