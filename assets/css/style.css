@@ -122,6 +122,17 @@ a:hover {
     text-align: center;
 }
 
+/* FOOTER STYLES  */
+footer {
+    position: relative;
+    bottom: 0;
+    margin-bottom: 1rem;
+    margin-left: 1.5rem;
+
+}
+.previousResultsButtons {
+    margin-right: 1rem
+}
 
 /* ID ELEMENT STYLES */
 #jumbotronStart h2 {
@@ -136,5 +147,5 @@ margin-bottom: 0rem;
 }
 
 #tryAgainButton {
-    margin: 1rem 0 1rem 0
+    margin: 1rem 4rem 1rem 0
 }
