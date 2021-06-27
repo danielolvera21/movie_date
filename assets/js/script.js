@@ -55,6 +55,8 @@ let firstNameInputElement = document.querySelector("#nameInput1");
 let secondNameInputElement = document.querySelector("#nameInput2");
 let loveCalcButtonElement = document.querySelector("#modal-close-outside #loveCalcButton");
 const jumbotronEndElement = document.querySelector('#jumbotronEnd');
+let previouslySearchedElement = document.querySelector("#previouslySearched");
+let previousResultsButtonElements = document.getElementsByClassName("previousResultsButtons");
 
 
 let triggerModalElement = document.querySelector("#calculateButton");
@@ -79,7 +81,6 @@ let modalFormSubmitHandler = function (event) {
     let userName = $("#nameInput1").val();
     let partnerName = $("#nameInput2").val();
     if (userName && partnerName) {
-        console.log(userName, partnerName);
         // hide the modal
         UIkit.modal(modalElement).hide();
         //remove existing h3 if exists
@@ -246,10 +247,6 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
         },
         {});
 
-        // console.log(movieTitlesArray)
-        // console.log(watchProviderArray)
-        // console.log(movieObject);
-
         // pull img file path for the poster
         const tmdbImgPath = data.results[randomResult].poster_path;
 
@@ -319,7 +316,43 @@ let dataPersistence = function (dataObject) {
       }
         checkLocalStorageValue.push(dataObject);
         localStorage.setItem("userOutput:", JSON.stringify(checkLocalStorageValue));
-        console.log(localStorage.getItem("userOutput:"));
+        createLocalStorageButtons();
   }
 };
+
+let createLocalStorageButtons = function () {
+    previouslySearchedElement.innerHTML = "";
+    let localStorageObject = JSON.parse(localStorage.getItem("userOutput:"));
+    for (i = 0; i < localStorageObject.length; i++) {
+       let previousName1 = localStorageObject[i].loveCalcResults[0];
+       let previousName2 = localStorageObject[i].loveCalcResults[1];
+       let previousScore = localStorageObject[i].loveCalcResults[3];
+       let previousGenre = localStorageObject[i].loveCalcResults[4];
+       let posterPathArray = localStorageObject[i].posters;
+       let previousResultsButtonElement = document.createElement('button');
+       previousResultsButtonElement.setAttribute("type", "button");
+       previousResultsButtonElement.setAttribute("class", "uk-button uk-button-default uk-button-large button-centered previousResultsButtons");
+       previousResultsButtonElement.value = localStorageObject[i];
+       previousResultsButtonElement.textContent = previousName1 + " + " + previousName2;
+       previouslySearchedElement.appendChild(previousResultsButtonElement);
+       previousResultsButtonElement.addEventListener("click", function(){
+           let movieContainers = document.getElementsByClassName("movieContainer");
+           let movieListItems = document.getElementsByClassName("movieList")
+           for (i = 0; i < movieContainers.length; i++) {
+               if (movieContainers[i].hasChildNodes()){
+                   movieContainers[i].removeChild(movieListItems[i]);
+               }
+               let newPosterImage = document.createElement("img");
+               newPosterImage.setAttribute("src", posterPathArray[i]);
+               newPosterImage.setAttribute("class", "movieList");
+               movieContainers[i].appendChild(newPosterImage);
+           }
+           changeDisplay(previousName1, previousName2, previousScore, previousGenre)
+       })
+    }
+}
+createLocalStorageButtons();
+
+
+
 
