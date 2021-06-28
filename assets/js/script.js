@@ -196,12 +196,13 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
 
         if (response.ok) {
             const data = await response.json();
+            // pull movie title from data object
+            const movieTitle = data.results[randomResult].title;
             // if has an image url, push the movie title to the movieTitlesArray
-            if (data.results[randomResult].poster_path) {
+            if (data.results[randomResult].poster_path && !movieTitlesArray.includes(movieTitle)) {
                 // pull movie ID from data object
                 const movieId = data.results[randomResult].id;
-                // pull movie title from data object
-                const movieTitle = data.results[randomResult].title;
+
                 // push movie title to movieTitlesArray
                 movieTitlesArray.push(movieTitle);
                 // pull watch provider data
@@ -250,10 +251,6 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
                 // pull img file path for the poster
                 const tmdbImgPath = data.results[randomResult].poster_path;
 
-                // create header for movie title
-                let movieTitleEl = document.createElement("H1");
-                // create text of h1 header
-                let headerEl = document.createTextNode(movieTitle);
                 // create img element
                 let imgEL = document.createElement("img");
                 imgEL.setAttribute("src", tmdbImgSrcUrl + tmdbImgPath);
@@ -271,6 +268,7 @@ async function getMovieTitles(genreId, name1, name2, percentage, genreName) {
     }
 }
 
+// create h3 display showing comp % and genre 
 async function changeDisplay(name1, name2, percentage, genre) {
     let jumbotronStartElement = document.querySelector("#jumbotronStart");
     jumbotronStartElement.style.display = "none";
@@ -278,9 +276,9 @@ async function changeDisplay(name1, name2, percentage, genre) {
     let jumbotronEndElement = document.querySelector("#jumbotronEnd");
     let endingHeadline = document.createElement("h3");
     endingHeadline.textContent =
-        name1 +
+        capitalizeFirstLetter(name1) +
         " and " +
-        name2 +
+        capitalizeFirstLetter(name2) +
         ", your compatibility score is " +
         percentage +
         "%! For a score like that, we recommend these " +
@@ -320,6 +318,7 @@ let dataPersistence = function (dataObject) {
     }
 };
 
+// create the button to display previously searched couples
 let createLocalStorageButtons = function () {
     previouslySearchedElement.innerHTML = "";
     let localStorageObject = JSON.parse(localStorage.getItem("userOutput:"));
@@ -350,10 +349,12 @@ let createLocalStorageButtons = function () {
                 movieContainers[i].appendChild(newPosterImage);
             }
             changeDisplay(previousName1, previousName2, previousScore, previousGenre)
-            console.log(previousName1, previousName2, previousScore, previousGenre)
+
         })
     }
 }
+
+// load buttons
 createLocalStorageButtons();
 
 

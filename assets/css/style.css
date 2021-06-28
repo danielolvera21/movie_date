@@ -149,3 +149,70 @@ margin-bottom: 0rem;
 #tryAgainButton {
     margin: 1rem 4rem 1rem 0
 }
+
+/* // Medium devices (tablets, 768px and up) */
+@media (max-width: 768px) {
+    
+    body {
+        text-align: center;
+    }
+
+    #jumbotronEnd h3 {
+        width: 80%;
+        margin: 0 auto;
+        }
+
+    #tryAgainButton {
+        margin: 1rem;
+    }
+
+    footer {
+        display: flex;
+        flex-wrap: wrap;
+        flex-direction: column;
+    }
+
+    .previousResultsButtons {
+        margin-bottom: 1rem;
+    }
+
+    p {
+        margin: 1rem;
+    }
+}
+
+/* // Small devices (mobile phones, 575px and up) */
+@media (max-width: 575px) {
+
+    #jumbotronStart h2 {
+        margin: 0 auto;
+        width: 95%;
+    }
+
+    #jumbotronEnd h3 {
+        width: 95%;
+        margin: 0 auto;
+        padding: 0;
+    }
+  
+    .jumbotron h3 {
+        width: 95%;
+        margin: 1rem auto;
+    }
+
+    header {
+        margin-top: 1rem;
+    }
+
+    header nav li {
+        margin-right: 0;
+    }
+
+    h1 {
+        margin: 0;
+    }
+
+    ol, ul {
+        padding-left: 0;
+    }
+}
